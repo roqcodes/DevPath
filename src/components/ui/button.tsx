@@ -9,7 +9,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants = {
   default: "bg-accent text-accent-foreground hover:bg-blue-600 shadow-sm",
-  secondary: "bg-muted text-foreground hover:bg-zinc-800",
+  secondary: "bg-muted text-foreground hover:bg-zinc-200",
   outline: "border border-border bg-transparent hover:bg-muted text-foreground",
   ghost: "hover:bg-muted text-foreground",
   destructive: "bg-destructive text-white hover:bg-red-600",

@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Bot, ChevronRight, Lightbulb, Send, Sparkles } from "lucide-react";
+import { Bot, ChevronRight, Lightbulb, Send, Sparkles, Target, CheckCircle2, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { getMockMentorContext, getMockMentorResponse } from "@/lib/mock/mentor";
 import { useApp } from "@/lib/context/app-context";
 import { cn } from "@/lib/utils";
@@ -12,9 +11,10 @@ import { cn } from "@/lib/utils";
 interface MentorPanelProps {
   moduleSlug: string;
   checkpointId: string;
+  checkpointNumber?: number;
 }
 
-export function MentorPanel({ moduleSlug, checkpointId }: MentorPanelProps) {
+export function MentorPanel({ moduleSlug, checkpointId, checkpointNumber = 3 }: MentorPanelProps) {
   const { useHint } = useApp();
   const ctx = getMockMentorContext(moduleSlug);
   const [revealedHints, setRevealedHints] = useState(0);
@@ -43,44 +43,62 @@ export function MentorPanel({ moduleSlug, checkpointId }: MentorPanelProps) {
   };
 
   return (
-    <div className="flex h-full flex-col border-l border-border bg-card/50">
-      <div className="border-b border-border px-4 py-3">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-accent/15">
-            <Sparkles className="h-4 w-4 text-accent" />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold">AI Mentor</h3>
-            <p className="text-xs text-muted-foreground">Guiding you through this checkpoint</p>
+    <div className="flex h-full flex-col border-l border-border bg-card">
+      <div className="border-b border-border px-4 py-3 bg-muted/20">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-accent/15">
+              <Sparkles className="h-4 w-4 text-accent" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold">AI Mentor</h3>
+              <div className="flex items-center gap-1.5">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-success" />
+                </span>
+                <span className="text-[10px] text-muted-foreground">Online</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="mt-2 flex flex-wrap gap-1">
-          <Badge variant="secondary" className="text-[10px]">{ctx.moduleTitle}</Badge>
-          <Badge variant="outline" className="text-[10px]">{ctx.checkpointTitle}</Badge>
+        <div className="rounded-md border border-border bg-background px-3 py-2">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Checkpoint {String(checkpointNumber).padStart(2, "0")}
+          </p>
+          <p className="text-sm font-medium">{ctx.moduleTitle}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Prove that you understand isolated development.
+          </p>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        <div className="rounded-lg border border-border bg-muted/30 p-3 animate-fade-in">
-          <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-accent">
-            <Bot className="h-3.5 w-3.5" />
-            Contextual guidance
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        <div className="rounded-lg border border-border bg-muted/30 p-3">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-foreground mb-1">
+            <CheckCircle2 className="h-3.5 w-3.5 text-success" />
+            Objective
           </div>
-          <p className="text-sm leading-relaxed text-foreground/90">{ctx.intro}</p>
+          <p className="text-sm leading-relaxed">{ctx.intro}</p>
+        </div>
+
+        <div className="rounded-lg border border-accent/20 bg-accent/5 p-3">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-accent mb-1">
+            <Target className="h-3.5 w-3.5" />
+            Current task
+          </div>
+          <p className="text-sm">{ctx.task}</p>
         </div>
 
         <div className="space-y-2">
-          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Progressive hints</p>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+            <Lightbulb className="h-3 w-3" />
+            Progressive hints
+          </p>
           {ctx.hints.slice(0, revealedHints).map((hint) => (
-            <div
-              key={hint.id}
-              className="flex gap-2 rounded-md border border-border bg-muted/20 p-3 text-sm animate-fade-in"
-            >
-              <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
-              <div>
-                <span className="text-xs font-medium text-muted-foreground">Hint {hint.id}</span>
-                <p className="mt-0.5">{hint.text}</p>
-              </div>
+            <div key={hint.id} className="flex gap-2 rounded-md border border-border bg-muted/20 p-2.5 text-sm animate-fade-in">
+              <span className="text-xs font-medium text-warning shrink-0">H{hint.id}</span>
+              <p>{hint.text}</p>
             </div>
           ))}
           {revealedHints < ctx.hints.length && (
@@ -89,6 +107,16 @@ export function MentorPanel({ moduleSlug, checkpointId }: MentorPanelProps) {
               Reveal Hint {revealedHints + 1}
             </Button>
           )}
+        </div>
+
+        <div className="rounded-lg border border-accent/25 bg-gradient-to-r from-accent/[0.06] to-transparent p-3">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-accent mb-1">
+            <Zap className="h-3.5 w-3.5" />
+            AI insight
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Focus on creating an isolated branch — this mirrors real team workflows where features never touch main directly.
+          </p>
         </div>
 
         {showSolution && (
@@ -106,15 +134,12 @@ export function MentorPanel({ moduleSlug, checkpointId }: MentorPanelProps) {
 
         {messages.length > 0 && (
           <div className="space-y-2 border-t border-border pt-3">
-            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Ask Mentor</p>
             {messages.map((msg, i) => (
               <div
                 key={i}
                 className={cn(
                   "rounded-md p-2.5 text-sm animate-fade-in",
-                  msg.role === "user"
-                    ? "ml-4 bg-muted/50 text-foreground"
-                    : "mr-4 border border-border bg-muted/20"
+                  msg.role === "user" ? "ml-3 bg-muted/50" : "mr-3 border border-border bg-muted/20"
                 )}
               >
                 {msg.text}
@@ -124,8 +149,7 @@ export function MentorPanel({ moduleSlug, checkpointId }: MentorPanelProps) {
         )}
       </div>
 
-      <div className="border-t border-border p-3">
-        <p className="mb-2 text-xs text-muted-foreground">Ask about this checkpoint</p>
+      <div className="border-t border-border p-3 bg-muted/10">
         <div className="flex gap-2">
           <Input
             placeholder="Ask about this checkpoint..."
@@ -133,8 +157,9 @@ export function MentorPanel({ moduleSlug, checkpointId }: MentorPanelProps) {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && askMentor()}
             aria-label="Ask mentor"
+            className="text-sm"
           />
-          <Button size="icon" onClick={askMentor} aria-label="Send message">
+          <Button size="icon" onClick={askMentor} aria-label="Send">
             <Send className="h-4 w-4" />
           </Button>
         </div>

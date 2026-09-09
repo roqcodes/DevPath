@@ -72,7 +72,30 @@ export interface SkillNode {
   label: string;
   domain: SkillDomain;
   status: SkillLevel;
+  score?: number;
+  checkpointsCompleted?: number;
   children?: SkillNode[];
+}
+
+export interface LearningIntelligence {
+  readinessScore: number;
+  journeyProgress: number;
+  streak: number;
+  daysRemaining: number;
+  competencyLevel: string;
+  paceMessage: string;
+  xp: number;
+}
+
+export interface AILearningPlan {
+  priorities: string[];
+  insight: string;
+}
+
+export interface JourneyAIInsight {
+  message: string;
+  recommendedCheckpointSlug: string;
+  recommendedTitle: string;
 }
 
 export interface MentorHint {
@@ -158,6 +181,10 @@ export interface AppProgress {
   projectStagesCompleted: string[];
   projectComplete: boolean;
   certificateEarned: boolean;
+  xp: number;
+  readinessScore: number;
+  streak: number;
+  daysRemaining: number;
 }
 
 export interface AppState {

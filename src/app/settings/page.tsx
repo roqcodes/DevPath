@@ -22,7 +22,7 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Dark mode is enabled by default for the best learning experience.
+              Light theme is enabled for a clean, focused learning experience.
             </p>
           </CardContent>
         </Card>

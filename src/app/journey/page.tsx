@@ -1,6 +1,7 @@
 "use client";
 
 import { AppLayout } from "@/components/layout/app-layout";
+import { AIInsightPanel } from "@/components/journey/ai-insight-panel";
 import { JourneyHeader, JourneyTimeline } from "@/components/journey/journey-timeline";
 import { useApp } from "@/lib/context/app-context";
 import { getMockJourney } from "@/lib/mock/journey";
@@ -16,12 +17,15 @@ export default function JourneyPage() {
   return (
     <AppLayout>
       <JourneyHeader journey={journey} />
+      <AIInsightPanel />
+      <div id="journey-timeline">
       <JourneyTimeline
         journey={journey}
         userName={state.user.name}
         learningGoal={state.user.learningGoal}
         dailyCommitment={state.user.dailyCommitment}
       />
+      </div>
     </AppLayout>
   );
 }

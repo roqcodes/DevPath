@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Check, Circle, ArrowRight, Terminal, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -146,7 +145,7 @@ export function ProjectView() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="rounded-lg border border-border bg-[#0d0d0f] p-4 font-mono text-sm space-y-1 min-h-[200px]">
+              <div className="terminal-panel rounded-lg border border-border p-4 font-mono text-sm space-y-1 min-h-[200px]">
                 {terminalOutput.map((line, i) => (
                   <div key={i} className={cn(
                     "text-zinc-300",

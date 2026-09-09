@@ -1,14 +1,15 @@
 import type { AppState, AppProgress, AssessmentResult, JourneyData, UserData } from "@/lib/types/app";
 import { DEFAULT_USER } from "@/lib/mock/user";
 import { getMockJourney } from "@/lib/mock/journey";
+import { getMockAssessmentResult } from "@/lib/mock/assessment";
 
 const STORAGE_KEY = "devpath_app_state";
 
-const DEFAULT_PROGRESS: AppProgress = {
-  onboardingComplete: false,
-  assessmentComplete: false,
-  preferencesComplete: false,
-  journeyGenerated: false,
+export const DEMO_PROGRESS: AppProgress = {
+  onboardingComplete: true,
+  assessmentComplete: true,
+  preferencesComplete: true,
+  journeyGenerated: true,
   completedCheckpoints: ["cp-git-foundations"],
   currentCheckpointId: "cp-branches-merging",
   hintsUsed: {},
@@ -16,15 +17,20 @@ const DEFAULT_PROGRESS: AppProgress = {
   projectStagesCompleted: ["stage-git", "stage-testing", "stage-docker"],
   projectComplete: false,
   certificateEarned: false,
+  xp: 420,
+  readinessScore: 72,
+  streak: 7,
+  daysRemaining: 12,
 };
 
 export function getDefaultState(): AppState {
+  const progress = { ...DEMO_PROGRESS };
   return {
-    user: { ...DEFAULT_USER },
+    user: { ...DEFAULT_USER, role: "Software Developer" },
     assessmentAnswers: {},
-    assessmentResult: null,
-    journey: null,
-    progress: { ...DEFAULT_PROGRESS },
+    assessmentResult: getMockAssessmentResult(),
+    journey: getMockJourney(progress.completedCheckpoints, progress.currentCheckpointId),
+    progress,
   };
 }
 
@@ -34,11 +40,14 @@ export function loadAppState(): AppState {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return getDefaultState();
     const parsed = JSON.parse(raw) as AppState;
+    const progress = { ...DEMO_PROGRESS, ...parsed.progress };
     return {
       ...getDefaultState(),
       ...parsed,
       user: { ...DEFAULT_USER, ...parsed.user },
-      progress: { ...DEFAULT_PROGRESS, ...parsed.progress },
+      progress,
+      assessmentResult: parsed.assessmentResult ?? getMockAssessmentResult(),
+      journey: parsed.journey ?? getMockJourney(progress.completedCheckpoints, progress.currentCheckpointId),
     };
   } catch {
     return getDefaultState();

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   CheckCircle2,
@@ -36,7 +36,7 @@ interface WorkspaceViewProps {
 
 export function WorkspaceView({ moduleSlug }: WorkspaceViewProps) {
   const router = useRouter();
-  const { state, completeCheckpoint } = useApp();
+  const { completeCheckpoint } = useApp();
   const module = getMockModule(moduleSlug);
   const [activeTab, setActiveTab] = useState<TabId>("lesson");
   const [terminalLines, setTerminalLines] = useState<string[]>(
@@ -44,10 +44,18 @@ export function WorkspaceView({ moduleSlug }: WorkspaceViewProps) {
   );
   const [commandInput, setCommandInput] = useState("");
   const [completed, setCompleted] = useState(false);
-  const [hintsUsed] = useState(state.progress.hintsUsed[module?.id ?? ""] ?? 0);
+  useEffect(() => {
+    if (module?.type === "quiz") {
+      router.replace(`/workspace/${moduleSlug}/quiz`);
+    }
+  }, [module?.type, moduleSlug, router]);
 
   if (!module) {
     return <div className="p-8 text-center text-muted-foreground">Module not found</div>;
+  }
+
+  if (module.type === "quiz") {
+    return null;
   }
 
   const runCommand = () => {
@@ -76,11 +84,6 @@ export function WorkspaceView({ moduleSlug }: WorkspaceViewProps) {
     completeCheckpoint(module.id, "cp-remote-collab");
     router.push(`/workspace/${moduleSlug}/complete`);
   };
-
-  if (module.type === "quiz") {
-    router.push(`/workspace/${moduleSlug}/quiz`);
-    return null;
-  }
 
   return (
     <div className="flex h-screen flex-col bg-background">
@@ -138,7 +141,7 @@ export function WorkspaceView({ moduleSlug }: WorkspaceViewProps) {
 
             {activeTab === "code" && (
               <div className="animate-fade-in">
-                <pre className="rounded-lg border border-border bg-[#0d0d0f] p-4 font-mono text-sm leading-relaxed text-green-400/90 overflow-x-auto">
+                <pre className="terminal-panel rounded-lg border border-border p-4 font-mono text-sm leading-relaxed text-green-400/90 overflow-x-auto">
                   {module.codeExample ?? "# No code example for this checkpoint"}
                 </pre>
               </div>
@@ -152,12 +155,12 @@ export function WorkspaceView({ moduleSlug }: WorkspaceViewProps) {
                     <p className="text-sm">{module.challenge.instruction}</p>
                   </div>
                 )}
-                <div className="flex-1 rounded-lg border border-border bg-[#0d0d0f] font-mono text-sm overflow-hidden flex flex-col min-h-[200px]">
+                <div className="terminal-panel flex-1 rounded-lg border border-border font-mono text-sm overflow-hidden flex flex-col min-h-[200px]">
                   <div className="flex-1 overflow-y-auto p-4 space-y-1">
                     {terminalLines.map((line, i) => (
                       <div key={i} className={cn(
                         "whitespace-pre-wrap",
-                        line.includes("successfully") ? "text-success" : "text-zinc-300"
+                        line.includes("successfully") ? "text-green-400" : "text-zinc-300"
                       )}>
                         {line}
                       </div>
