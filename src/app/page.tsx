@@ -1,69 +1,190 @@
-import Image from "next/image";
+import Link from "next/link";
+import {
+  ArrowRight,
+  Award,
+  Bot,
+  GitBranch,
+  Map,
+  Play,
+  Sparkles,
+  Target,
+  Terminal,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/shared/logo";
+import { SkillBars } from "@/components/shared/skill-bars";
 
-export default function Home() {
+const FEATURES = [
+  {
+    icon: Map,
+    title: "Personalized learning",
+    description: "A curriculum adapted to your baseline skills, goals, and available time.",
+  },
+  {
+    icon: Target,
+    title: "Practical checkpoints",
+    description: "Prove your skills through hands-on challenges at every stage.",
+  },
+  {
+    icon: Bot,
+    title: "AI Mentor",
+    description: "Contextual guidance embedded in your learning — not a generic chatbot.",
+  },
+  {
+    icon: Terminal,
+    title: "Hands-on playground",
+    description: "Practice in a realistic developer environment with lessons and terminal.",
+  },
+  {
+    icon: GitBranch,
+    title: "Final project",
+    description: "Ship a containerized application through a complete CI/CD pipeline.",
+  },
+  {
+    icon: Award,
+    title: "Competency certificate",
+    description: "Earn a certificate demonstrating your DevOps fundamentals mastery.",
+  },
+];
+
+export default function LandingPage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="min-h-screen bg-background">
+      <header className="border-b border-border">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 lg:px-8">
+          <Logo />
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" asChild>
+              <Link href="/journey">Explore the Journey</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/onboarding">Build My Learning Path</Link>
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      <section className="mx-auto max-w-6xl px-4 py-20 lg:px-8 lg:py-28">
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
+          <div className="animate-fade-in">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-3 py-1 text-xs text-muted-foreground">
+              <Sparkles className="h-3 w-3 text-accent" />
+              Adaptive DevOps learning
+            </div>
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+              DevPath AI
+            </h1>
+            <p className="mt-4 text-xl text-muted-foreground">
+              Your personalized path to becoming DevOps-ready.
+            </p>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground max-w-lg">
+              DevPath adapts a complete DevOps learning journey to your current skills,
+              career goals, and available time. Learn, practice, and prove your abilities
+              across Git, Docker, CI/CD, Testing, and Deployment.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Button size="lg" asChild>
+                <Link href="/onboarding">
+                  Build My Learning Path
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <Link href="/dashboard">
+                  <Play className="h-4 w-4" />
+                  Explore the Journey
+                </Link>
+              </Button>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-border bg-card p-6 shadow-2xl animate-fade-in">
+            <div className="mb-4 flex items-center justify-between">
+              <span className="text-sm font-medium">Your DevOps Journey</span>
+              <span className="text-xs text-muted-foreground">21-day path · 42%</span>
+            </div>
+            <div className="mb-6 h-1.5 rounded-full bg-muted overflow-hidden">
+              <div className="h-full w-[42%] rounded-full bg-accent" />
+            </div>
+            <div className="mb-6 space-y-2">
+              <div className="flex items-center gap-2 text-sm">
+                <div className="h-2 w-2 rounded-full bg-success" />
+                <span className="text-muted-foreground">Git Foundations</span>
+                <span className="ml-auto text-xs text-success">Complete</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <div className="h-2 w-2 rounded-full bg-accent animate-pulse-subtle" />
+                <span>Branches & Merging</span>
+                <span className="ml-auto text-xs text-accent">Current</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="h-2 w-2 rounded-full bg-border" />
+                <span>Docker Fundamentals</span>
+              </div>
+            </div>
+            <div className="rounded-lg border border-border bg-muted/30 p-4 mb-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Bot className="h-4 w-4 text-accent" />
+                <span className="text-xs font-medium">AI Mentor</span>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Create a new branch for the navbar changes without modifying main.
+              </p>
+            </div>
+            <SkillBars compact />
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-border bg-muted/20">
+        <div className="mx-auto max-w-6xl px-4 py-20 lg:px-8">
+          <div className="mb-12 text-center">
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              Learn → Practice → Prove
+            </h2>
+            <p className="mt-2 text-muted-foreground">
+              Everything you need to become deployment-ready
+            </p>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {FEATURES.map((feature) => (
+              <div
+                key={feature.title}
+                className="rounded-lg border border-border bg-card p-6 transition-colors hover:border-accent/30"
+              >
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-accent/10">
+                  <feature.icon className="h-5 w-5 text-accent" />
+                </div>
+                <h3 className="font-semibold">{feature.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-6xl px-4 py-16 text-center lg:px-8">
+          <h2 className="text-2xl font-semibold">Ready to start your DevOps journey?</h2>
+          <p className="mt-2 text-muted-foreground">
+            Take a short assessment and get your personalized learning path in minutes.
           </p>
+          <Button size="lg" className="mt-6" asChild>
+            <Link href="/onboarding">
+              Build My Learning Path
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <footer className="border-t border-border py-8">
+        <div className="mx-auto max-w-6xl px-4 text-center text-sm text-muted-foreground lg:px-8">
+          DevPath AI — Adaptive DevOps learning environment
         </div>
-      </main>
+      </footer>
     </div>
   );
 }
