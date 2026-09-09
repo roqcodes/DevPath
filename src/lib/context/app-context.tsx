@@ -120,6 +120,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         ...state.progress,
         completedCheckpoints: completed,
         currentCheckpointId: nextCheckpointId ?? checkpointId,
+        xp: state.progress.xp + 120,
+        readinessScore: Math.min(100, state.progress.readinessScore + 3),
       };
       persist({
         ...state,

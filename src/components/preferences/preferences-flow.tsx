@@ -29,10 +29,10 @@ const DURATIONS = ["7 days", "14 days", "21 days", "30 days", "60 days"];
 const COMMITMENTS = ["15 min", "30 min", "1 hour", "2+ hours"];
 
 const LOADING_STEPS = [
-  "Analyzing your baseline...",
-  "Mapping your goals...",
-  "Building your learning journey...",
-  "Preparing practical checkpoints...",
+  "Assessing current skills",
+  "Understanding your goals",
+  "Mapping prerequisite skills",
+  "Building personalized journey",
 ];
 
 export function PreferencesFlow() {
@@ -60,30 +60,33 @@ export function PreferencesFlow() {
     });
     setLoading(true);
 
-    for (let i = 0; i < LOADING_STEPS.length; i++) {
+    for (let i = 0; i <= LOADING_STEPS.length; i++) {
       setLoadingStep(i);
-      await new Promise((r) => setTimeout(r, 800));
+      await new Promise((r) => setTimeout(r, 700));
     }
 
     await generateJourney();
+    await new Promise((r) => setTimeout(r, 600));
     router.push("/journey");
   };
 
   if (loading) {
+    const done = loadingStep >= LOADING_STEPS.length;
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="max-w-md w-full px-4 text-center animate-fade-in">
-          <Loader2 className="h-10 w-10 animate-spin text-accent mx-auto mb-6" />
-          <h2 className="text-xl font-semibold mb-6">Building your learning path</h2>
-          <div className="space-y-3 text-left">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground mb-6">
+            Analyzing Your Profile
+          </p>
+          <div className="space-y-3 text-left mb-8">
             {LOADING_STEPS.map((step, i) => (
               <div key={step} className="flex items-center gap-3 text-sm">
                 {i < loadingStep ? (
-                  <Check className="h-4 w-4 text-success" />
-                ) : i === loadingStep ? (
-                  <Loader2 className="h-4 w-4 animate-spin text-accent" />
+                  <Check className="h-4 w-4 text-success shrink-0" />
+                ) : i === loadingStep && !done ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-accent shrink-0" />
                 ) : (
-                  <div className="h-4 w-4 rounded-full border border-border" />
+                  <div className="h-4 w-4 rounded-full border border-border shrink-0" />
                 )}
                 <span className={i <= loadingStep ? "text-foreground" : "text-muted-foreground"}>
                   {step}
@@ -91,6 +94,11 @@ export function PreferencesFlow() {
               </div>
             ))}
           </div>
+          {done && (
+            <p className="text-lg font-semibold text-accent animate-fade-in">
+              Your learning path is ready.
+            </p>
+          )}
         </div>
       </div>
     );

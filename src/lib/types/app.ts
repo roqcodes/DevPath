@@ -112,6 +112,18 @@ export interface MentorContext {
   solution: string;
 }
 
+export interface WorkspaceWorkflowStep {
+  title: string;
+  command: string;
+  description: string;
+}
+
+export interface WorkspaceGitState {
+  branches: string[];
+  currentBranch: string;
+  commits: Record<string, number>;
+}
+
 export interface WorkspaceCheckpoint {
   id: string;
   moduleSlug: string;
@@ -123,13 +135,18 @@ export interface WorkspaceCheckpoint {
   lesson: {
     content: string;
     diagram?: string;
+    keyPoints?: string[];
   };
   codeExample?: string;
+  workflowSteps?: WorkspaceWorkflowStep[];
   terminalOutput?: string;
+  initialGitState?: WorkspaceGitState;
   challenge?: {
     instruction: string;
     expectedCommand: string;
     successMessage: string;
+    objectives?: string[];
+    context?: string;
   };
   type: "lesson" | "quiz" | "practice";
 }

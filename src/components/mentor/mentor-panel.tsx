@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bot, ChevronRight, Lightbulb, Send, Sparkles, Target, CheckCircle2, Zap } from "lucide-react";
+import { ChevronRight, Lightbulb, Send, Sparkles, Target, CheckCircle2, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getMockMentorContext, getMockMentorResponse } from "@/lib/mock/mentor";

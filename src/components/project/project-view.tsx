@@ -44,7 +44,7 @@ export function ProjectView() {
 
   const handleViewAchievement = () => {
     earnCertificate();
-    router.push("/certificate");
+    router.push("/readiness-report");
   };
 
   if (showCompletion || state.progress.projectComplete) {

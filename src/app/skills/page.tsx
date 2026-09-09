@@ -12,7 +12,7 @@ export default function SkillsPage() {
         </p>
       </div>
 
-      <div className="mb-8 rounded-lg border border-border bg-card p-5 max-w-lg">
+      <div className="mb-8 rounded-lg border border-border bg-card p-5 max-w-lg hover-lift">
         <h2 className="text-sm font-medium mb-4">Overall Skill Profile</h2>
         <SkillBars />
       </div>

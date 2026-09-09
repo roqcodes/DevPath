@@ -6,3 +6,4 @@ export { getMockMentorContext, getMockMentorResponse } from "./mentor";
 export { getMockProject, PROJECT_COMPETENCY } from "./project";
 export { getMockCertificate } from "./certificate";
 export { getMockSkillGraph, getMockSkillScores, ACHIEVEMENTS } from "./skills";
+export { getLearningIntelligence, getAILearningPlan, getJourneyAIInsight, READINESS_REPORT } from "./intelligence";

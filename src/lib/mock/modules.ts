@@ -12,26 +12,76 @@ const WORKSPACES: Record<string, WorkspaceCheckpoint> = {
     type: "practice",
     lesson: {
       content:
-        "Branches let you work on changes independently from the main codebase. Each branch is a separate line of development that can be merged back when ready.",
-      diagram: `main
- |
- |---- feature/login
- |
- |---- feature/navbar`,
+        "In team workflows, every feature gets its own branch so main stays stable. You branch off main, commit your work in isolation, then merge back via pull request when the feature is ready.",
+      diagram: `main ─────●─────●
+              \\
+               feature/login ───●  (you are here)
+               
+Next: create feature/navbar from your current branch`,
+      keyPoints: [
+        "Branches are cheap — create one per feature or bugfix",
+        "git checkout -b creates and switches in a single command",
+        "Never commit directly to main in collaborative workflows",
+        "Use descriptive names like feature/navbar or fix/login-bug",
+      ],
     },
-    codeExample: `# Create and switch to a new branch
+    codeExample: `# Feature branch workflow — reference commands
+
+# 1. Check where you are
+git status
+git branch
+
+# 2. Create + switch to a new feature branch
 git checkout -b feature/navbar
 
-# Verify current branch
-git branch`,
-    terminalOutput: `$ git status
+# 3. Confirm the branch was created
+git branch
+# * feature/navbar    ← asterisk = current branch
 
+# 4. (Later) Merge back into main
+git checkout main
+git merge feature/navbar`,
+    workflowSteps: [
+      {
+        title: "Check current branch",
+        command: "git status",
+        description: "See which branch you're on before creating a new one.",
+      },
+      {
+        title: "List local branches",
+        command: "git branch",
+        description: "The asterisk (*) marks your active branch.",
+      },
+      {
+        title: "Create feature branch",
+        command: "git checkout -b feature/navbar",
+        description: "Creates the branch and switches to it in one step.",
+      },
+      {
+        title: "Verify the switch",
+        command: "git branch",
+        description: "Confirm feature/navbar is now active.",
+      },
+    ],
+    initialGitState: {
+      branches: ["main", "feature/login"],
+      currentBranch: "feature/login",
+      commits: { main: 2, "feature/login": 1 },
+    },
+    terminalOutput: `$ git status
 On branch feature/login
 nothing to commit, working tree clean`,
     challenge: {
       instruction: "Create a feature branch called feature/navbar and switch to it.",
       expectedCommand: "git checkout -b feature/navbar",
       successMessage: "Branch created successfully.",
+      context:
+        "You're on feature/login. The team needs a separate branch for navbar work — create feature/navbar without touching main.",
+      objectives: [
+        "Create a new branch named feature/navbar",
+        "Switch to the new branch in the same command",
+        "Verify the branch appears in git branch output",
+      ],
     },
   },
   "git-foundations": {
