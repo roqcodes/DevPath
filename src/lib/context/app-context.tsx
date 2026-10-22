@@ -15,6 +15,7 @@ import type { SubmissionRecord } from "@/lib/types/sait";
 import { computeRankingScore } from "@/lib/services/ranking-service";
 import { lessonVisitProgressPatch } from "@/lib/learning/lesson-progress-semantics";
 import { todayIsoDate } from "@/lib/utils";
+import { dispatchEngine } from "@/lib/engine/store";
 
 interface AppContextValue {
   state: AppState;
@@ -127,6 +128,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
         user: { ...state.user, ...user },
         progress: { ...state.progress, onboardingComplete: true },
       });
+      dispatchEngine({
+        type: "onboarding_completed",
+        goal: "dsa_mastery",
+        level: user.dsaExperience ?? "beginner",
+        minutesPerDay: 20,
+      });
     },
     [state, persist]
   );
@@ -149,6 +156,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
         };
         saveAppState(next);
         if (firstView) {
+          dispatchEngine({
+            type: "lesson_viewed",
+            lessonId,
+            moduleSlug,
+            lessonSlug,
+          });
           fetch("/api/progress", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -195,6 +208,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
           streak: bumpStreak(state.progress),
         },
       });
+      const mod = state.progress.lastVisitedLesson?.moduleSlug ?? "";
+      dispatchEngine({
+        type: "lesson_completed",
+        lessonId,
+        moduleSlug: mod,
+        mastery,
+      });
     },
     [state, persist]
   );
@@ -202,6 +222,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const submitLessonQuiz = useCallback(
     (lessonId: string, correctCount: number, minRequired: number): boolean => {
       const passed = correctCount >= minRequired;
+      dispatchEngine({
+        type: "quiz_finished",
+        quizId: lessonId,
+        correct: correctCount,
+        total: minRequired,
+      });
       if (passed) {
         persist({
           ...state,
@@ -301,6 +327,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
             ? { ...daily, completedProblems: daily.completedProblems + 1 }
             : daily,
         },
+      });
+      dispatchEngine({
+        type: "problem_attempted",
+        problemId: submission.problemId,
+        accepted,
       });
     },
     [state, persist]

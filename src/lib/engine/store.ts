@@ -68,6 +68,15 @@ export function dispatchEngine(event: EngineEvent): EngineState {
   return next;
 }
 
+/** Claim a finished quest and apply its XP bonus. */
+export function claimEngineQuest(questId: string): EngineState {
+  return dispatchEngine({ type: "custom", name: `quest_claim:${questId}` });
+}
+
+export function clearPendingCelebration(): void {
+  updateEngine((s) => ({ ...s, pendingCelebration: null }));
+}
+
 export function onEngineEvent(listener: EventListener): () => void {
   eventListeners.add(listener);
   return () => eventListeners.delete(listener);
