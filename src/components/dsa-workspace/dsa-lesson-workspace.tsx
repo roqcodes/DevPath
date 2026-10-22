@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   CheckCircle2,
@@ -26,6 +26,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useApp } from "@/lib/context/app-context";
+import { CompanionAssist } from "@/components/companion";
+import { celebrate } from "@/components/motion";
 import { cn } from "@/lib/utils";
 
 type MobilePane = "learn" | "playground" | "guide";
@@ -50,6 +52,8 @@ export function DsaLessonWorkspace({
   const lessonDone = content ? state.progress.completedLessons.includes(content.id) : false;
   const prev = getPrevLesson(moduleSlug, lessonSlug);
   const next = getNextLesson(moduleSlug, lessonSlug);
+  const wasDoneRef = useRef(lessonDone);
+  const [showCompleteMoment, setShowCompleteMoment] = useState(false);
 
   const lessonId = content?.id;
 
@@ -57,6 +61,18 @@ export function DsaLessonWorkspace({
     if (!lessonId) return;
     recordLessonVisit(moduleSlug, lessonSlug, lessonId);
   }, [lessonId, moduleSlug, lessonSlug, recordLessonVisit]);
+
+  useEffect(() => {
+    if (lessonDone && !wasDoneRef.current) {
+      celebrate({ kind: "small" });
+      setShowCompleteMoment(true);
+    }
+    wasDoneRef.current = lessonDone;
+  }, [lessonDone]);
+
+  const assistDetail = content
+    ? [content.learn.hook, content.learn.summary].join(" ").slice(0, 600)
+    : undefined;
 
   if (locked) {
     return (
@@ -161,6 +177,38 @@ export function DsaLessonWorkspace({
           </div>
         </div>
       </header>
+
+      <div className="shrink-0 border-b border-slate-100 bg-indigo-50/30 px-4 py-2">
+        <CompanionAssist
+          className="text-xs text-slate-600"
+          context={{
+            surface: "lesson",
+            subject: content.title,
+            detail: assistDetail,
+          }}
+        />
+      </div>
+
+      {showCompleteMoment && lessonDone && (
+        <div
+          className="shrink-0 flex flex-wrap items-center justify-between gap-2 border-b border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm"
+          role="status"
+        >
+          <span className="font-semibold text-emerald-900">Lesson complete — nice work.</span>
+          {next ? (
+            <Button size="sm" asChild className="font-semibold">
+              <Link href={`/learn/${next.moduleSlug}/${next.lessonSlug}`}>
+                Next lesson
+                <ChevronRight className="h-4 w-4 ml-0.5" />
+              </Link>
+            </Button>
+          ) : (
+            <Button size="sm" variant="outline" asChild>
+              <Link href="/path">View path</Link>
+            </Button>
+          )}
+        </div>
+      )}
 
       {/* Mobile pane switcher */}
       <div className="lg:hidden flex border-b border-slate-200 bg-white">

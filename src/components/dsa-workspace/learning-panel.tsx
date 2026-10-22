@@ -8,6 +8,7 @@ import { TopicVisualizer } from "./visualizers";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useApp } from "@/lib/context/app-context";
+import { LessonPracticeDeck } from "@/components/learn/lesson-practice-deck";
 
 const TABS: { id: WorkspaceTabId; label: string }[] = [
   { id: "learn", label: "Learn" },
@@ -158,7 +159,8 @@ export function LearningPanel({
         )}
 
         {tab === "practice" && (
-          <div className="space-y-3">
+          <div className="space-y-4">
+            <LessonPracticeDeck moduleSlug={moduleSlug} lessonTitle={lesson.title} />
             <p>{lesson.practice.warmup}</p>
             <p className="text-muted-foreground">{lesson.practice.conceptCheck}</p>
             <p className="text-xs">Difficulty: {lesson.practice.difficultyLabel}</p>

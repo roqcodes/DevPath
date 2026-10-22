@@ -7,9 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DSA_SYLLABUS, syllabusProgress } from "@/lib/data/dsa-syllabus";
+import { DSA_SYLLABUS, getNextIncompleteLesson, syllabusProgress } from "@/lib/data/dsa-syllabus";
+import { getModule } from "@/lib/curriculum";
 import { useApp } from "@/lib/context/app-context";
 import { cn } from "@/lib/utils";
+import { Map } from "lucide-react";
 
 export default function LearnPage() {
   const { state } = useApp();
@@ -17,9 +19,67 @@ export default function LearnPage() {
   const totalLessons = DSA_SYLLABUS.reduce((acc, m) => acc + m.lessons.length, 0);
   const completedCount = state.progress.completedLessons.length;
 
+  const next = getNextIncompleteLesson(state.progress.completedLessons);
+  const last = state.progress.lastVisitedLesson;
+  const continueModuleSlug = last?.moduleSlug ?? next?.moduleSlug;
+  const continueLessonSlug = last?.lessonSlug ?? next?.lessonSlug;
+  const continueMod = continueModuleSlug ? getModule(continueModuleSlug) : undefined;
+  const continueLesson = continueMod?.lessons.find((l) => l.slug === continueLessonSlug);
+  const continueHref =
+    continueModuleSlug && continueLessonSlug
+      ? `/learn/${continueModuleSlug}/${continueLessonSlug}`
+      : "/learn/foundations/variables-types";
+  const continuePct =
+    continueModuleSlug ? Math.round(
+      ((continueMod?.lessons.filter((l) => state.progress.completedLessons.includes(l.id)).length ?? 0) /
+        Math.max(continueMod?.lessons.length ?? 1, 1)) *
+        100
+    ) : 0;
+
   return (
     <AppLayout>
       <div className="space-y-8 animate-fade-in">
+        {/* Continue + path */}
+        <div className="grid gap-4 lg:grid-cols-[1fr_auto]">
+          <Card className="border-indigo-200/80 bg-gradient-to-br from-white via-indigo-50/40 to-cyan-50/30 shadow-sm overflow-hidden">
+            <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-indigo-600">
+                  Continue where you left off
+                </p>
+                <p className="text-xs text-slate-500 mt-0.5 truncate">{continueMod?.title ?? "Programming Foundations"}</p>
+                <h2 className="text-lg font-bold text-slate-900 truncate mt-1">
+                  {continueLesson?.title ?? "Variables, types, and expressions"}
+                </h2>
+                <div className="mt-3 max-w-xs">
+                  <div className="flex justify-between text-[11px] text-slate-500 mb-1">
+                    <span>Track progress</span>
+                    <span className="font-semibold text-slate-800 tabular-nums">{continuePct}%</span>
+                  </div>
+                  <Progress value={continuePct} size="sm" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 shrink-0">
+                <Button asChild className="font-semibold group">
+                  <Link href={continueHref}>
+                    Resume lesson
+                    <ArrowRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="sm" className="gap-1.5">
+                  <Link href="/path">
+                    <Map className="h-3.5 w-3.5" aria-hidden />
+                    See your map
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+          <Button asChild variant="outline" size="sm" className="h-fit self-start lg:self-center">
+            <Link href="/review">Review due cards</Link>
+          </Button>
+        </div>
+
         {/* Header Hero */}
         <div className="flex flex-col gap-6 rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/70 via-white to-sky-50/50 p-6 lg:p-8 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
