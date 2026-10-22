@@ -24,6 +24,43 @@
   --terminal-bg: #0f172a;
   --terminal-fg: #e2e8f0;
   --radius: 0.875rem;
+
+  /* DevPath design system (V14 DNA) */
+  --brand-50: #eef2ff;
+  --brand-100: #e0e7ff;
+  --brand-200: #c7d2fe;
+  --brand-300: #a5b4fc;
+  --brand-400: #818cf8;
+  --brand-500: #6366f1;
+  --brand-600: #4f46e5;
+  --brand-700: #4338ca;
+  --brand-800: #3730a3;
+  --brand-900: #312e81;
+  --brand-950: #1e1b4b;
+
+  --primary: var(--brand-600);
+  --primary-strong: var(--brand-700);
+  --primary-soft: var(--brand-50);
+  --primary-foreground: #ffffff;
+  --ink: #1e1b4b;
+  --ink-deep: #020617;
+  --ink-foreground: #ffffff;
+  --highlight: #67e8f9;
+  --highlight-strong: #0e7490;
+  --highlight-soft: #ecfeff;
+  --flame: #f97316;
+  --flame-strong: #c2410c;
+  --flame-soft: #fff7ed;
+  --xp: #84cc16;
+  --xp-strong: #4d7c0f;
+  --xp-soft: #f7fee7;
+  --surface: #f8fafc;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f1f5f9;
+
+  --dur-fast: 120ms;
+  --dur-base: 220ms;
+  --dur-slow: 420ms;
 }
 
 @theme inline {
@@ -52,6 +89,63 @@
   --radius-md: var(--radius);
   --radius-lg: calc(var(--radius) + 6px);
   --radius-xl: calc(var(--radius) + 12px);
+
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+  --color-brand-950: var(--brand-950);
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-ink: var(--ink);
+  --color-ink-deep: var(--ink-deep);
+  --color-ink-foreground: var(--ink-foreground);
+  --color-highlight: var(--highlight);
+  --color-highlight-strong: var(--highlight-strong);
+  --color-highlight-soft: var(--highlight-soft);
+  --color-flame: var(--flame);
+  --color-flame-strong: var(--flame-strong);
+  --color-flame-soft: var(--flame-soft);
+  --color-xp: var(--xp);
+  --color-xp-strong: var(--xp-strong);
+  --color-xp-soft: var(--xp-soft);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04), 0 6px 16px -4px rgba(15, 23, 42, 0.03);
+  --shadow-md: 0 4px 10px -2px rgba(15, 23, 42, 0.06), 0 12px 24px -8px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 12px 28px -6px rgba(15, 23, 42, 0.1), 0 24px 48px -12px rgba(15, 23, 42, 0.08);
+  --shadow-glow: 0 0 0 1px rgba(99, 102, 241, 0.18), 0 6px 24px -4px rgba(79, 70, 229, 0.35);
+
+  --radius-card: 1rem;
+  --radius-hero: 1.5rem;
+  --radius-pill: 9999px;
+}
+
+/* `static` keeps these on :root even when no utility uses them, so raw CSS can reference them. */
+@theme static {
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04), 0 6px 16px -4px rgba(15, 23, 42, 0.03);
+  --shadow-md: 0 4px 10px -2px rgba(15, 23, 42, 0.06), 0 12px 24px -8px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 12px 28px -6px rgba(15, 23, 42, 0.1), 0 24px 48px -12px rgba(15, 23, 42, 0.08);
+  --shadow-glow: 0 0 0 1px rgba(99, 102, 241, 0.18), 0 6px 24px -4px rgba(79, 70, 229, 0.35);
+
+  --radius-card: 1rem;
+  --radius-hero: 1.5rem;
+  --radius-pill: 9999px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 * {
@@ -264,5 +358,174 @@ body:has(.auth-viewport) {
 
   .hover-lift:hover {
     transform: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* DevPath design system utilities (owner: Agent D)                    */
+/* ------------------------------------------------------------------ */
+
+/* `eyebrow` is the merge-safe alias: tailwind-merge treats `text-eyebrow` as a text color
+   and drops it when combined with e.g. `text-slate-500` inside cn(). */
+.eyebrow,
+.text-eyebrow {
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.text-display {
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  text-wrap: balance;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.surface-ink {
+  position: relative;
+  isolation: isolate;
+  color: var(--ink-foreground);
+  background:
+    radial-gradient(60% 80% at 100% 0%, rgba(34, 211, 238, 0.16), transparent 60%),
+    radial-gradient(55% 70% at 0% 100%, rgba(99, 102, 241, 0.35), transparent 65%),
+    linear-gradient(135deg, var(--brand-900) 0%, var(--ink) 48%, var(--ink-deep) 100%);
+}
+
+.surface-ink::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+  -webkit-mask-image: radial-gradient(ellipse at 70% 20%, #000 10%, transparent 70%);
+  mask-image: radial-gradient(ellipse at 70% 20%, #000 10%, transparent 70%);
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.surface-ink .focus-ring:focus-visible,
+.focus-ring-on-ink:focus-visible {
+  outline-color: var(--highlight);
+}
+
+.press {
+  transition: transform var(--dur-fast) var(--ease-out-expo);
+}
+
+.press:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(0.97);
+}
+
+.card-interactive {
+  position: relative;
+  cursor: pointer;
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+/* Elevation lives on a pseudo-element so hover only animates opacity + transform. */
+.card-interactive::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.28), var(--shadow-md);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out-expo);
+}
+
+.card-interactive:hover,
+.card-interactive:focus-visible {
+  transform: translateY(-2px);
+}
+
+.card-interactive:hover::after,
+.card-interactive:focus-visible::after {
+  opacity: 1;
+}
+
+.card-interactive:active {
+  transform: translateY(0) scale(0.995);
+}
+
+.card-interactive:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@keyframes ds-toast-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes ds-toast-out {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(6px) scale(0.97); }
+}
+
+@keyframes ds-dialog-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes ds-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.ds-toast-enter {
+  animation: ds-toast-in var(--dur-slow) var(--ease-spring) both;
+}
+
+.ds-toast-exit {
+  animation: ds-toast-out var(--dur-base) var(--ease-out-expo) both;
+}
+
+.ds-dialog {
+  animation: ds-dialog-in var(--dur-base) var(--ease-out-expo) both;
+}
+
+.ds-dialog::backdrop {
+  background: rgba(2, 6, 23, 0.45);
+  backdrop-filter: blur(2px);
+  animation: ds-fade-in var(--dur-base) ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .press:active:not(:disabled):not([aria-disabled="true"]),
+  .card-interactive:hover,
+  .card-interactive:focus-visible,
+  .card-interactive:active {
+    transform: none;
+  }
+
+  .ds-toast-enter,
+  .ds-dialog {
+    animation: ds-fade-in var(--dur-fast) linear both;
+  }
+
+  .ds-toast-exit {
+    animation: none;
+    opacity: 0;
+  }
+
+  .ds-dialog::backdrop {
+    animation: none;
   }
 }

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
 import "./globals.css";
@@ -14,9 +14,37 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SAIT DSA — CUSAT peer learning & practice",
+  title: {
+    default: "DevPath",
+    template: "%s · DevPath",
+  },
   description:
-    "Structured DSA syllabus, searchable question bank, and peer rankings for SAIT (IT & AI) at CUSAT.",
+    "DevPath helps SAIT students at CUSAT learn DSA with a structured syllabus, practice problems, peer rankings, and an AI study companion.",
+  applicationName: "DevPath",
+  keywords: ["DSA", "CUSAT", "SAIT", "programming", "peer learning", "DevPath"],
+  authors: [{ name: "DevPath" }],
+  creator: "DevPath",
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    siteName: "DevPath",
+    title: "DevPath — Learn DSA with structure",
+    description:
+      "Structured DSA curriculum, searchable practice, and batch rankings for SAIT (IT & AI) at CUSAT.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DevPath",
+    description: "Structured DSA learning and practice for CUSAT SAIT students.",
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#4f46e5",
+  colorScheme: "light",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

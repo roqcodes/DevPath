@@ -1,11 +1,20 @@
 import { cn } from "@/lib/utils";
 import type { HTMLAttributes } from "react";
 
-export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+export interface CardProps extends HTMLAttributes<HTMLDivElement> {
+  variant?: "default" | "interactive" | "flat";
+  padding?: "default" | "dense";
+}
+
+export function Card({ className, variant = "default", padding, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "rounded-2xl border border-slate-200/80 bg-card text-card-foreground shadow-[0_1px_3px_rgba(15,23,42,0.03),0_6px_16px_-4px_rgba(15,23,42,0.02)] transition-all duration-200",
+        "rounded-2xl border border-slate-200/80 bg-card text-card-foreground transition-all duration-200",
+        variant === "default" && "shadow-sm",
+        variant === "interactive" && "card-interactive shadow-sm",
+        variant === "flat" && "shadow-none",
+        padding === "dense" && "[&_.card-pad]:p-5",
         className
       )}
       {...props}
@@ -14,7 +23,7 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
 }
 
 export function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("flex flex-col gap-1.5 p-6", className)} {...props} />;
+  return <div className={cn("card-pad flex flex-col gap-1.5 p-6", className)} {...props} />;
 }
 
 export function CardTitle({ className, ...props }: HTMLAttributes<HTMLHeadingElement>) {
@@ -31,9 +40,9 @@ export function CardDescription({ className, ...props }: HTMLAttributes<HTMLPara
 }
 
 export function CardContent({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("p-6 pt-0", className)} {...props} />;
+  return <div className={cn("card-pad p-6 pt-0", className)} {...props} />;
 }
 
 export function CardFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("flex items-center p-6 pt-0", className)} {...props} />;
+  return <div className={cn("card-pad flex items-center p-6 pt-0", className)} {...props} />;
 }
