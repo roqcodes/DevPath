@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { Keyboard, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Logo } from "@/components/shared/logo";
-import { DailyGoalRing, LevelBadge, StreakFlame } from "@/components/progression";
 import { Kbd } from "@/components/ui/kbd";
-import { openCommandPalette, openShortcutsHelp } from "./use-shell-data";
+import { HeaderStatsCluster } from "./header-stats";
+import { openCommandPalette } from "./use-shell-data";
 
 export function AppHeader() {
   return (
@@ -28,36 +27,8 @@ export function AppHeader() {
         <Kbd className="hidden sm:inline-flex">Ctrl K</Kbd>
       </button>
 
-      <div className="flex items-center gap-2 lg:ml-auto lg:gap-3">
-        <Link
-          href="/achievements"
-          aria-label="Streak"
-          className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-        >
-          <StreakFlame size="sm" />
-        </Link>
-        <Link
-          href="/dashboard#today"
-          aria-label="Daily goal"
-          className="hidden rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 sm:inline-flex"
-        >
-          <DailyGoalRing size={30} />
-        </Link>
-        <Link
-          href="/achievements"
-          aria-label="Level"
-          className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-        >
-          <LevelBadge compact />
-        </Link>
-        <button
-          type="button"
-          onClick={openShortcutsHelp}
-          aria-label="Keyboard shortcuts (?)"
-          className="hidden h-9 w-9 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 lg:flex"
-        >
-          <Keyboard className="h-4 w-4" aria-hidden />
-        </button>
+      <div className="shrink-0 lg:ml-auto">
+        <HeaderStatsCluster />
       </div>
     </header>
   );

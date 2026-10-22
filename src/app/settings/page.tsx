@@ -13,6 +13,7 @@ import {
   Target,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/app-layout";
+import { PageHeader, PageScroll } from "@/components/layout/page-shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,15 +41,12 @@ export default function SettingsPage() {
 
   return (
     <AppLayout>
-      <div className="space-y-6 animate-fade-in pb-12 max-w-2xl">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-            Account & Preferences
-          </h1>
-          <p className="mt-1 text-sm text-slate-500">
-            Configure your personal practice targets, platform session, and developer controls.
-          </p>
-        </div>
+      <PageHeader
+        icon={Sliders}
+        title="Account & preferences"
+        description="Practice targets, session controls, and feedback — tuned to how you actually study."
+      />
+      <PageScroll className="mx-auto w-full max-w-2xl">
 
         {/* Practice goals */}
         <Card className="border-slate-200/80 bg-white shadow-xs">
@@ -137,7 +135,7 @@ export default function SettingsPage() {
             <p>• Curriculum: 12 Modules · 89 Verified Lessons</p>
           </CardContent>
         </Card>
-      </div>
+      </PageScroll>
     </AppLayout>
   );
 }

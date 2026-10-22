@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -50,6 +51,8 @@ function bumpStreak(progress: AppState["progress"]): number {
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AppState>(getDefaultState);
   const [hydrated, setHydrated] = useState(false);
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   useEffect(() => {
     const loaded = loadAppState();
@@ -140,38 +143,34 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const recordLessonVisit = useCallback(
     (moduleSlug: string, lessonSlug: string, lessonId: string) => {
-      setState((prev) => {
-        const patch = lessonVisitProgressPatch(
-          prev.progress,
-          moduleSlug,
-          lessonSlug,
-          lessonId
-        );
-        if (!patch) return prev;
-        const firstView =
-          patch.viewedLessons.length > prev.progress.viewedLessons.length;
-        const next = {
-          ...prev,
-          progress: { ...prev.progress, ...patch },
-        };
-        saveAppState(next);
-        if (firstView) {
-          dispatchEngine({
-            type: "lesson_viewed",
-            lessonId,
-            moduleSlug,
-            lessonSlug,
-          });
-          fetch("/api/progress", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ action: "lesson_viewed", lessonId }),
-          }).catch(() => undefined);
-        }
-        return next;
+      const prev = stateRef.current;
+      const patch = lessonVisitProgressPatch(
+        prev.progress,
+        moduleSlug,
+        lessonSlug,
+        lessonId
+      );
+      if (!patch) return;
+      const firstView =
+        patch.viewedLessons.length > prev.progress.viewedLessons.length;
+      persist({
+        ...prev,
+        progress: { ...prev.progress, ...patch },
       });
+      if (!firstView) return;
+      dispatchEngine({
+        type: "lesson_viewed",
+        lessonId,
+        moduleSlug,
+        lessonSlug,
+      });
+      fetch("/api/progress", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "lesson_viewed", lessonId }),
+      }).catch(() => undefined);
     },
-    []
+    [persist]
   );
 
   const completeLesson = useCallback(
@@ -337,27 +336,33 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [state, persist]
   );
 
-  const setLastActiveProblem = useCallback(
-    (problemId: string) => {
-      persist({ ...state, progress: { ...state.progress, lastActiveProblemId: problemId } });
-    },
-    [state, persist]
-  );
+  const setLastActiveProblem = useCallback((problemId: string) => {
+    setState((prev) => {
+      if (prev.progress.lastActiveProblemId === problemId) return prev;
+      const next = {
+        ...prev,
+        progress: { ...prev.progress, lastActiveProblemId: problemId },
+      };
+      saveAppState(next);
+      return next;
+    });
+  }, []);
 
   const addPracticeMinutes = useCallback(
     (minutes: number) => {
       if (minutes <= 0) return;
+      const prev = stateRef.current;
       persist({
-        ...state,
+        ...prev,
         progress: {
-          ...state.progress,
-          activeMinutesThisWeek: state.progress.activeMinutesThisWeek + minutes,
-          activeMinutesLast30Days: state.progress.activeMinutesLast30Days + minutes,
+          ...prev.progress,
+          activeMinutesThisWeek: prev.progress.activeMinutesThisWeek + minutes,
+          activeMinutesLast30Days: prev.progress.activeMinutesLast30Days + minutes,
           lastPracticeDate: todayIsoDate(),
         },
       });
     },
-    [state, persist]
+    [persist]
   );
 
   const setWeeklyGoal = useCallback(

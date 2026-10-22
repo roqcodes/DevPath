@@ -1,180 +1,93 @@
-"use client";
-
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import {
-  ArrowRight,
-  GitBranch,
-  Medal,
-  Sparkles,
-  Swords,
-  Zap,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Logo } from "@/components/shared/logo";
-import { Reveal } from "@/components/motion";
-import { enableDemoCookie } from "@/lib/auth/demo";
+import { Map, Sparkles, Swords } from "lucide-react";
+import { CompanionAvatar } from "@/components/companion";
+import { LandingCta, PredictDemo } from "@/components/dashboard/landing-islands";
 
-const PILLARS = [
+const FEATURES = [
   {
-    icon: GitBranch,
-    title: "Path map",
-    copy: "One glowing node. Five minutes. Then the next.",
-  },
-  {
-    icon: Swords,
-    title: "Arena",
-    copy: "Mock interviews with Kip watching your weak spots.",
-  },
-  {
-    icon: Medal,
-    title: "Achievements",
-    copy: "Identity cards you actually want to share.",
+    icon: Map,
+    title: "A path, not a pile",
+    body: "Four questions in, you get a route through 12 DSA modules sized to your goal and your daily minutes.",
+    tone: "text-cyan-300 bg-cyan-400/10 ring-cyan-300/20",
   },
   {
     icon: Sparkles,
-    title: "Wrapped",
-    copy: "Your term, story-sized — not another leaderboard flex.",
+    title: "Kip pays attention",
+    body: "Your companion remembers what you miss, explains it a different way, and schedules reviews before you forget.",
+    tone: "text-indigo-200 bg-indigo-400/15 ring-indigo-300/20",
+  },
+  {
+    icon: Swords,
+    title: "The Arena",
+    body: "Timed mock interviews with an AI interviewer. Think aloud, get scored, see exactly where you lost points.",
+    tone: "text-rose-200 bg-rose-400/10 ring-rose-300/20",
   },
 ];
 
 export default function LandingPage() {
-  const router = useRouter();
-
-  function tryWithoutAccount() {
-    enableDemoCookie();
-    router.push("/start");
-  }
-
   return (
-    <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-40"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 20% 20%, rgba(79,70,229,0.35), transparent 45%), radial-gradient(circle at 80% 10%, rgba(34,211,238,0.25), transparent 40%), radial-gradient(circle at 50% 80%, rgba(249,115,22,0.12), transparent 50%)",
-        }}
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.07]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-        }}
-        aria-hidden
-      />
+    <div className="relative min-h-dvh overflow-hidden bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-950 text-white">
+      <div className="pointer-events-none absolute -right-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-indigo-500/20 blur-3xl" aria-hidden />
+      <div className="pointer-events-none absolute -left-24 top-1/2 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl" aria-hidden />
 
-      <header className="relative border-b border-white/10">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 lg:px-8">
-          <Logo href="/" size="sm" tone="onDark" />
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Button variant="ghost" className="text-indigo-100 hover:text-white hover:bg-white/10" asChild>
-              <Link href="/login">Sign in</Link>
-            </Button>
-            <Button className="bg-white text-indigo-950 hover:bg-cyan-50" asChild>
-              <Link href="/signup">Join SAIT DSA</Link>
-            </Button>
-          </div>
-        </div>
+      <header className="relative z-10 mx-auto flex h-16 max-w-6xl items-center justify-between px-5 lg:px-8">
+        <Link href="/" className="flex items-center gap-2 rounded text-sm font-bold tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300">
+          <CompanionAvatar mood="idle" size={26} />
+          DevPath
+        </Link>
+        <Link href="/login" className="rounded text-xs font-semibold text-indigo-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300">
+          Sign in
+        </Link>
       </header>
 
-      <section className="relative mx-auto max-w-6xl px-4 py-16 lg:px-8 lg:py-24">
-        <div className="grid gap-14 lg:grid-cols-2 lg:items-center">
-          <Reveal className="m-rise">
-            <p className="mb-3 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-cyan-300/90">
-              <Zap className="h-3.5 w-3.5" />
-              DevPath · zero-config demo
-            </p>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">
-              DSA that feels like{" "}
-              <span className="bg-gradient-to-r from-cyan-300 via-indigo-200 to-white bg-clip-text text-transparent">
-                a game you can win
+      <main className="relative z-10">
+        <section className="mx-auto grid max-w-6xl gap-12 px-5 pb-16 pt-10 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16 lg:px-8 lg:pt-16">
+          <div className="motion-safe:animate-fade-in">
+            <div className="mb-6 flex items-center gap-3">
+              <CompanionAvatar mood="excited" size={56} />
+              <p className="rounded-2xl rounded-bl-sm border border-white/15 bg-white/10 px-3.5 py-2 text-xs text-indigo-100 backdrop-blur-md">
+                Hi, I&apos;m Kip. I&apos;ll learn how you learn.
+              </p>
+            </div>
+            <h1 className="text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
+              Learn DSA by doing.{" "}
+              <span className="bg-gradient-to-r from-cyan-300 to-indigo-200 bg-clip-text text-transparent">
+                With a companion who actually pays attention.
               </span>
-              .
             </h1>
-            <p className="mt-5 text-lg text-indigo-200/90 max-w-lg leading-relaxed">
-              Structured syllabus, real code on the judge, spaced review, and a living path map — built for
-              CUSAT IT &amp; AI, playable in demo mode with no backend setup.
+            <p className="mt-5 max-w-lg text-base leading-relaxed text-indigo-200/90">
+              Short lessons you run, not read. Reviews timed to your memory. Mock interviews that hit back. Built for students
+              who want to actually get good.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button size="lg" className="bg-indigo-500 hover:bg-indigo-400 text-white shadow-lg" onClick={tryWithoutAccount}>
-                Try without an account
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white/20 bg-white/5 text-white hover:bg-white/10"
-                asChild
-              >
-                <Link href="/dashboard">Open workspace</Link>
-              </Button>
+            <div className="mt-8">
+              <LandingCta />
             </div>
-            <p className="mt-4 text-[11px] text-indigo-300/70">
-              Sets <code className="font-mono text-cyan-200/80">devpath_demo=1</code> and walks you through
-              4 steps on <Link href="/start" className="underline hover:text-white">/start</Link>.
-            </p>
-          </Reveal>
-
-          <Reveal delay={80} className="relative m-rise">
-            <div className="rounded-3xl border border-white/15 bg-gradient-to-br from-indigo-900/80 via-slate-900/90 to-slate-950 p-6 shadow-lg backdrop-blur-md lg:p-8">
-              <div className="flex items-center justify-between text-xs font-semibold text-indigo-200">
-                <span>Live path preview</span>
-                <span className="rounded-full bg-cyan-500/20 px-2 py-0.5 text-cyan-200 ring-1 ring-cyan-400/30">
-                  Node 0 · glowing
-                </span>
-              </div>
-              <div className="mt-6 grid grid-cols-3 gap-3">
-                {[0, 1, 2, 3, 4, 5].map((n) => (
-                  <div
-                    key={n}
-                    className={
-                      n === 0
-                        ? "col-span-1 flex aspect-square items-center justify-center rounded-2xl border border-cyan-400/50 bg-cyan-500/20 m-glow"
-                        : "aspect-square rounded-2xl border border-white/10 bg-white/5 opacity-50"
-                    }
-                  >
-                    {n === 0 && <GitBranch className="h-6 w-6 text-cyan-300 m-float" aria-hidden />}
-                  </div>
-                ))}
-              </div>
-              <ul className="mt-6 space-y-2 text-sm text-indigo-100/90">
-                <li className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-cyan-400" />
-                  Today: one lesson + two problems
-                </li>
-                <li className="flex items-center gap-2 text-indigo-300/70">
-                  <span className="h-2 w-2 rounded-full bg-white/20" />
-                  Review queue warms up after your first quiz
-                </li>
-              </ul>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="relative border-t border-white/10 bg-white/[0.02]">
-        <div className="mx-auto max-w-6xl px-4 py-16 lg:px-8">
-          <h2 className="text-center text-2xl font-semibold tracking-tight">Study · Compete · Share</h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 m-stagger">
-            {PILLARS.map((p, i) => (
-              <Reveal key={p.title} delay={i * 50} className="rounded-2xl border border-white/10 bg-white/5 p-5 hover-lift">
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/20 text-cyan-300 ring-1 ring-white/10">
-                  <p.icon className="h-5 w-5" aria-hidden />
-                </div>
-                <h3 className="font-semibold">{p.title}</h3>
-                <p className="mt-2 text-sm text-indigo-200/80 leading-relaxed">{p.copy}</p>
-              </Reveal>
-            ))}
           </div>
-        </div>
-      </section>
+          <div className="motion-safe:animate-fade-in" style={{ animationDelay: "120ms" }}>
+            <PredictDemo />
+          </div>
+        </section>
 
-      <footer className="relative border-t border-white/10 py-8 text-center text-sm text-indigo-300/70">
-        DevPath — peer learning for CUSAT IT &amp; AI · Press <kbd className="font-mono text-cyan-200/80">⌘K</kbd>{" "}
-        in the app to jump anywhere
+        <section className="mx-auto max-w-6xl px-5 pb-20 lg:px-8" aria-labelledby="features-title">
+          <h2 id="features-title" className="sr-only">
+            What you get
+          </h2>
+          <ul className="grid gap-4 sm:grid-cols-3">
+            {FEATURES.map((f) => (
+              <li key={f.title} className="rounded-2xl border border-white/10 bg-white/[0.05] p-5 transition-colors hover:bg-white/[0.08]">
+                <span className={`flex h-10 w-10 items-center justify-center rounded-xl ring-1 ${f.tone}`}>
+                  <f.icon className="h-5 w-5" aria-hidden />
+                </span>
+                <h3 className="mt-4 text-sm font-bold">{f.title}</h3>
+                <p className="mt-1.5 text-xs leading-relaxed text-indigo-200/85">{f.body}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </main>
+
+      <footer className="relative z-10 border-t border-white/10 py-6 text-center text-[11px] text-indigo-300/70">
+        DevPath · DSA for students, with Kip
       </footer>
     </div>
   );

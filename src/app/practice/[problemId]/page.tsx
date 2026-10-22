@@ -28,7 +28,7 @@ export default function ProblemPage({ params }: { params: Promise<{ problemId: s
 
   if (loading) {
     return (
-      <AppLayout>
+      <AppLayout wideContent>
         <p className="text-muted-foreground">Loading problem…</p>
       </AppLayout>
     );
@@ -36,7 +36,7 @@ export default function ProblemPage({ params }: { params: Promise<{ problemId: s
 
   if (error || !problem) {
     return (
-      <AppLayout>
+      <AppLayout wideContent>
         <p>Problem not found.</p>
         <Link href="/practice" className="text-accent underline">Back to practice</Link>
       </AppLayout>
@@ -44,7 +44,7 @@ export default function ProblemPage({ params }: { params: Promise<{ problemId: s
   }
 
   return (
-    <AppLayout>
+    <AppLayout wideContent>
       <ProblemWorkspace problem={problem} returnTo={returnTo} />
     </AppLayout>
   );

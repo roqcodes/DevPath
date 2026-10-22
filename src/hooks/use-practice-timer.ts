@@ -13,8 +13,12 @@ export function usePracticeTimer(
   contextType: "problem" | "lesson" = "problem"
 ) {
   const { addPracticeMinutes } = useApp();
+  const addPracticeMinutesRef = useRef(addPracticeMinutes);
+  addPracticeMinutesRef.current = addPracticeMinutes;
   const lastActivity = useRef(Date.now());
   const accumulatedSeconds = useRef(0);
+  const lastHeartbeatAt = useRef(0);
+  const heartbeatInFlight = useRef(false);
 
   useEffect(() => {
     if (!active) return;
@@ -27,9 +31,14 @@ export function usePracticeTimer(
     window.addEventListener("keydown", markActive);
 
     const sendHeartbeat = () => {
+      const now = Date.now();
+      if (now - lastHeartbeatAt.current < HEARTBEAT_MS - 2000) return;
       const visible = !document.hidden;
-      const idle = Date.now() - lastActivity.current > INACTIVITY_MS;
-      if (!visible || idle) return;
+      const idle = now - lastActivity.current > INACTIVITY_MS;
+      if (!visible || idle || heartbeatInFlight.current) return;
+
+      heartbeatInFlight.current = true;
+      lastHeartbeatAt.current = now;
 
       fetch("/api/activity/heartbeat", {
         method: "POST",
@@ -44,11 +53,14 @@ export function usePracticeTimer(
             if (accumulatedSeconds.current >= 60) {
               const minutes = Math.floor(accumulatedSeconds.current / 60);
               accumulatedSeconds.current %= 60;
-              addPracticeMinutes(minutes);
+              addPracticeMinutesRef.current(minutes);
             }
           }
         })
-        .catch(() => undefined);
+        .catch(() => undefined)
+        .finally(() => {
+          heartbeatInFlight.current = false;
+        });
     };
 
     const interval = window.setInterval(sendHeartbeat, HEARTBEAT_MS);
@@ -59,5 +71,5 @@ export function usePracticeTimer(
       window.removeEventListener("pointerdown", markActive);
       window.removeEventListener("keydown", markActive);
     };
-  }, [active, contextId, contextType, addPracticeMinutes]);
+  }, [active, contextId, contextType]);
 }

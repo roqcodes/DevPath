@@ -6,9 +6,9 @@ import {
   Code2,
   Filter,
   Search,
-  Sparkles,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/app-layout";
+import { PageFill, PageHeader, PageScroll } from "@/components/layout/page-shell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -81,46 +81,30 @@ export default function PracticePage() {
   const totalSolvedCount = state.progress.solvedProblems.length;
 
   return (
-    <AppLayout>
-      <div className="space-y-6 animate-fade-in">
-        {/* Header Banner */}
-        <div className="flex flex-col gap-6 rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/70 via-white to-sky-50/40 p-6 lg:p-8 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-800">
-                  <Sparkles className="h-3 w-3 text-emerald-600" />
-                  Peer Problem Bank
-                </span>
-                <span className="text-xs font-medium text-slate-500">Judge0 Live Judge</span>
-              </div>
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-                DSA Problem Practice
-              </h1>
-              <p className="mt-1 text-sm text-slate-600 max-w-2xl leading-relaxed">
-                Sharpen algorithmic execution with curated interview and coursework problems.
-                Test with custom inputs and submit against test suites.
-              </p>
-            </div>
-
-            {/* Quick stats pill */}
-            <div className="flex shrink-0 items-center gap-4 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+    <AppLayout wideContent>
+      <PageFill>
+        <PageHeader
+          eyebrow="Peer problem bank · Judge0"
+          icon={Code2}
+          title="DSA Problem Practice"
+          description="Sharpen algorithmic execution with curated interview and coursework problems. Run samples and submit against full test suites."
+          action={
+            <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
                 <CheckCircle2 className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-xs font-medium text-slate-500">Solved / Bank</p>
-                <p className="text-xl font-bold text-slate-900">
-                  {totalSolvedCount}{" "}
-                  <span className="text-xs font-normal text-slate-400">/ {total}</span>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Solved</p>
+                <p className="text-lg font-bold tabular-nums text-slate-900">
+                  {totalSolvedCount}
+                  <span className="text-xs font-normal text-slate-400"> / {total}</span>
                 </p>
               </div>
             </div>
-          </div>
-        </div>
+          }
+        />
 
-        {/* Filter Controls Bar */}
-        <div className="grid gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs md:grid-cols-12">
+        <div className="shrink-0 grid gap-3 rounded-2xl border border-slate-200/80 bg-white p-3 shadow-sm md:grid-cols-12 md:p-4">
           {/* Search */}
           <div className="relative md:col-span-4">
             <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
@@ -206,7 +190,7 @@ export default function PracticePage() {
           </div>
         </div>
 
-        {/* Loading state */}
+        <PageScroll className="gap-4 pt-2">
         {loading && (
           <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white py-16 text-center">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent mb-3" />
@@ -281,7 +265,8 @@ export default function PracticePage() {
             </div>
           </div>
         )}
-      </div>
+        </PageScroll>
+      </PageFill>
     </AppLayout>
   );
 }

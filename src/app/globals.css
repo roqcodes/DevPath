@@ -507,6 +507,31 @@ body:has(.auth-viewport) {
   animation: ds-fade-in var(--dur-base) ease-out both;
 }
 
+@layer components {
+  .page-scroll {
+    min-height: 0;
+    flex: 1 1 0%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .copy-body {
+    font-size: 0.875rem;
+    line-height: 1.625;
+    color: var(--muted-foreground);
+    text-align: justify;
+    text-wrap: pretty;
+  }
+
+  .copy-lead {
+    font-size: 1rem;
+    line-height: 1.625;
+    color: var(--muted-foreground);
+    text-align: justify;
+    text-wrap: pretty;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .press:active:not(:disabled):not([aria-disabled="true"]),
   .card-interactive:hover,

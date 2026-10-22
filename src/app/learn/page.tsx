@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, BookOpen, CheckCircle2, Clock, Lock, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCircle2, Clock, Lock, RotateCcw, Sparkles } from "lucide-react";
 import { AppLayout } from "@/components/layout/app-layout";
+import { PageScroll } from "@/components/layout/page-shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -38,10 +39,9 @@ export default function LearnPage() {
 
   return (
     <AppLayout>
-      <div className="space-y-8 animate-fade-in">
+      <PageScroll className="gap-8">
         {/* Continue + path */}
-        <div className="grid gap-4 lg:grid-cols-[1fr_auto]">
-          <Card className="border-indigo-200/80 bg-gradient-to-br from-white via-indigo-50/40 to-cyan-50/30 shadow-sm overflow-hidden">
+        <Card className="border-indigo-200/80 bg-gradient-to-br from-white via-indigo-50/40 to-cyan-50/30 shadow-sm overflow-hidden">
             <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex-1 min-w-0">
                 <p className="text-[11px] font-bold uppercase tracking-wider text-indigo-600">
@@ -72,13 +72,15 @@ export default function LearnPage() {
                     See your map
                   </Link>
                 </Button>
+                <Button asChild variant="ghost" size="sm" className="gap-1.5 text-slate-600">
+                  <Link href="/review">
+                    <RotateCcw className="h-3.5 w-3.5" aria-hidden />
+                    Review due cards
+                  </Link>
+                </Button>
               </div>
             </CardContent>
           </Card>
-          <Button asChild variant="outline" size="sm" className="h-fit self-start lg:self-center">
-            <Link href="/review">Review due cards</Link>
-          </Button>
-        </div>
 
         {/* Header Hero */}
         <div className="flex flex-col gap-6 rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/70 via-white to-sky-50/50 p-6 lg:p-8 shadow-xs">
@@ -94,7 +96,7 @@ export default function LearnPage() {
               <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
                 DSA Syllabus & Learning Tracks
               </h1>
-              <p className="mt-1 text-sm text-slate-600 max-w-2xl leading-relaxed">
+              <p className="mt-1 max-w-2xl copy-body">
                 Step-by-step algorithmic concepts with interactive visualizers, complexity breakdowns,
                 worked traces, and code playgrounds.
               </p>
@@ -249,7 +251,7 @@ export default function LearnPage() {
             );
           })}
         </div>
-      </div>
+      </PageScroll>
     </AppLayout>
   );
 }

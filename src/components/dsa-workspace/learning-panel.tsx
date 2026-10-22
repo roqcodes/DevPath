@@ -81,7 +81,7 @@ export function LearningPanel({
         ))}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 text-sm leading-relaxed min-h-0">
+      <div className="flex-1 overflow-y-auto p-4 copy-body min-h-0">
         {tab === "learn" && (
           <div className="space-y-4">
             <p className="text-base font-medium">{lesson.learn.hook}</p>

@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { Target } from "lucide-react";
 import { AppLayout } from "@/components/layout/app-layout";
+import { PageHeader, PageScroll } from "@/components/layout/page-shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,11 +24,12 @@ export default function ChallengesPage() {
 
   return (
     <AppLayout>
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight">Challenges</h1>
-        <p className="mt-1 text-muted-foreground">Daily goals, weekly targets, and consistency tracking.</p>
-      </div>
-
+      <PageHeader
+        icon={Target}
+        title="Challenges"
+        description="Daily goals, weekly targets, and consistency tracking — small commitments that compound."
+      />
+      <PageScroll>
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
@@ -81,6 +84,7 @@ export default function ChallengesPage() {
           </CardContent>
         </Card>
       </div>
+      </PageScroll>
     </AppLayout>
   );
 }

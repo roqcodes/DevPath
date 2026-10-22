@@ -2,7 +2,6 @@ import {
   BookOpen,
   Code2,
   Gift,
-  Layers,
   Map,
   MoreHorizontal,
   Repeat,
@@ -46,7 +45,6 @@ export const MOBILE_TABS: NavItem[] = [
 ];
 
 export const MORE_ICON = MoreHorizontal;
-export const LEARN_ICON = Layers;
 
 export function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(href + "/");

@@ -151,24 +151,24 @@ export function Arena() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden">
       <ArenaStyles />
-      <header className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-950 p-6 text-white">
-        <div aria-hidden className="pointer-events-none absolute -right-10 -top-16 h-56 w-56 rounded-full bg-cyan-400/20 blur-3xl" />
-        <div aria-hidden className="pointer-events-none absolute -bottom-20 left-10 h-56 w-56 rounded-full bg-indigo-500/30 blur-3xl" />
-        <div className="relative flex flex-wrap items-end justify-between gap-4">
-          <div>
+      <header className="relative shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-950 px-4 py-3.5 text-white md:px-5 md:py-4">
+        <div aria-hidden className="pointer-events-none absolute -right-10 -top-16 h-48 w-48 rounded-full bg-cyan-400/20 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-16 left-8 h-40 w-40 rounded-full bg-indigo-500/30 blur-3xl" />
+        <div className="relative flex flex-wrap items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
             <p className="text-[10px] font-bold uppercase tracking-wider text-cyan-300">The Arena</p>
-            <h1 className="mt-1 text-2xl font-bold tracking-tight">Mock interviews, as boss fights</h1>
-            <p className="mt-1 max-w-xl text-xs text-indigo-200">
-              Three rounds: concept, trade-offs, and a real problem. Every good answer is damage. Kip is in your corner.
+            <h1 className="mt-0.5 text-lg font-bold tracking-tight md:text-xl">Mock interviews, as boss fights</h1>
+            <p className="mt-1 max-w-3xl text-[11px] leading-relaxed text-indigo-200/95 text-pretty md:text-xs">
+              Three rounds — concept, trade-offs, and a real problem. Strong answers deal damage. Kip coaches from the sideline.
             </p>
           </div>
           {phase !== "select" && (
             <button
               type="button"
               onClick={() => setPhase("select")}
-              className="rounded-xl border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-medium backdrop-blur transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+              className="shrink-0 rounded-xl border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-medium backdrop-blur transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
             >
               Change boss
             </button>
@@ -176,79 +176,100 @@ export function Arena() {
         </div>
       </header>
 
-      {phase === "select" && <BossSelect onPick={(id) => start(id)} />}
+      {phase === "select" && (
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-0.5">
+          <BossSelect onPick={(id) => start(id)} />
+        </div>
+      )}
 
       {phase !== "select" && (
-        <div className="grid gap-4 lg:grid-cols-[300px_1fr]">
+        <div className="grid min-h-0 flex-1 gap-3 overflow-hidden md:grid-cols-[minmax(220px,280px)_minmax(0,1fr)] md:gap-4 lg:grid-cols-[minmax(260px,300px)_1fr]">
           <BossPanel boss={boss} hp={hp} hit={hit} roundIdx={roundIdx} total={questions.length} records={records} />
 
-          <div className="space-y-4">
+          <div className="flex min-h-0 flex-col overflow-hidden">
             {(phase === "round" || phase === "grading") && question && (
-              <section aria-labelledby="round-title" className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
-                <div className="flex flex-wrap items-center justify-between gap-2">
+              <section
+                aria-labelledby="round-title"
+                className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm md:p-5"
+              >
+                <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-indigo-600">
                     Round {roundIdx + 1} of {questions.length} · {ROUND_META[question.kind].label}
                   </p>
                   <RoundTimer on={timerOn} paused={paused} secs={secs} onToggle={() => setTimerOn((v) => !v)} onPause={() => setPaused((p) => !p)} />
                 </div>
-                <h2 id="round-title" className="mt-2 text-base font-semibold leading-snug text-slate-900">
-                  {question.prompt}
-                </h2>
-                <p className="mt-1 text-[11px] text-slate-500">{ROUND_META[question.kind].hint}</p>
+                <div className="mt-3 shrink-0 space-y-2">
+                  <h2
+                    id="round-title"
+                    className="text-base font-semibold leading-snug text-slate-900 text-justify md:text-lg"
+                  >
+                    {question.prompt}
+                  </h2>
+                  <p className="text-[11px] leading-relaxed text-slate-500 text-justify">{ROUND_META[question.kind].hint}</p>
+                </div>
 
                 {roundIdx === 0 && records.length === 0 && (
-                  <CompanionNote mood="focused" className="mt-4 flex items-start gap-3 rounded-xl bg-slate-50 p-3 text-xs text-slate-700">
-                    I&apos;m in your corner. Concept round first: define it cleanly, then show where it breaks. Structure beats length.
+                  <CompanionNote
+                    mood="focused"
+                    className="mt-3 shrink-0 rounded-xl border-indigo-100/80 bg-indigo-50/50 p-3 text-xs text-slate-700"
+                  >
+                    <p className="leading-relaxed text-justify">
+                      I&apos;m in your corner. Concept round first: define it cleanly, then show where it breaks. Structure beats length.
+                    </p>
                   </CompanionNote>
                 )}
 
-                <label htmlFor="arena-answer" className="mt-4 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                  Your answer
-                </label>
-                <textarea
-                  id="arena-answer"
-                  ref={answerRef}
-                  value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
-                  onKeyDown={onKey}
-                  disabled={phase === "grading"}
-                  rows={7}
-                  placeholder="Talk it through like you would out loud…"
-                  className="mt-1.5 w-full resize-y rounded-xl border border-slate-200 bg-white p-3 text-sm leading-relaxed text-slate-800 placeholder:text-slate-400 focus-visible:border-indigo-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 disabled:opacity-60"
-                />
+                <div className="mt-3 flex min-h-0 flex-1 flex-col">
+                  <label
+                    htmlFor="arena-answer"
+                    className="block shrink-0 text-[10px] font-bold uppercase tracking-wider text-slate-500"
+                  >
+                    Your answer
+                  </label>
+                  <textarea
+                    id="arena-answer"
+                    ref={answerRef}
+                    value={answer}
+                    onChange={(e) => setAnswer(e.target.value)}
+                    onKeyDown={onKey}
+                    disabled={phase === "grading"}
+                    placeholder="Talk it through like you would out loud…"
+                    className="mt-1.5 min-h-[6rem] w-full flex-1 resize-none rounded-xl border border-slate-200 bg-slate-50/50 p-3 text-sm leading-relaxed text-slate-800 placeholder:text-slate-400 focus-visible:border-indigo-400 focus-visible:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 disabled:opacity-60 [text-align:justify]"
+                  />
 
-                {question.kind === "approach" && (
-                  <div className="mt-2">
-                    <button
-                      type="button"
-                      aria-expanded={showCode}
-                      onClick={() => setShowCode((v) => !v)}
-                      className="rounded-md text-[11px] font-medium text-indigo-600 hover:text-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300"
-                    >
-                      {showCode ? "Hide pseudo-code" : "Add pseudo-code (optional)"}
-                    </button>
-                    {showCode && (
-                      <textarea
-                        aria-label="Pseudo-code"
-                        value={code}
-                        onChange={(e) => setCode(e.target.value)}
-                        onKeyDown={onKey}
-                        disabled={phase === "grading"}
-                        rows={6}
-                        spellCheck={false}
-                        placeholder={"function solve(nums):\n  ..."}
-                        className="mt-1.5 w-full resize-y rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs leading-relaxed text-cyan-100 placeholder:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-                      />
-                    )}
-                  </div>
-                )}
+                  {question.kind === "approach" && (
+                    <div className="mt-2 shrink-0">
+                      <button
+                        type="button"
+                        aria-expanded={showCode}
+                        onClick={() => setShowCode((v) => !v)}
+                        className="rounded-md text-[11px] font-medium text-indigo-600 hover:text-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300"
+                      >
+                        {showCode ? "Hide pseudo-code" : "Add pseudo-code (optional)"}
+                      </button>
+                      {showCode && (
+                        <textarea
+                          aria-label="Pseudo-code"
+                          value={code}
+                          onChange={(e) => setCode(e.target.value)}
+                          onKeyDown={onKey}
+                          disabled={phase === "grading"}
+                          rows={4}
+                          spellCheck={false}
+                          placeholder={"function solve(nums):\n  ..."}
+                          className="mt-1.5 max-h-28 w-full resize-none rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs leading-relaxed text-cyan-100 placeholder:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
 
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                  <p className="text-[11px] text-slate-400">
-                    <kbd className="rounded border border-slate-200 bg-slate-50 px-1 font-mono text-[10px]">Ctrl</kbd> +{" "}
-                    <kbd className="rounded border border-slate-200 bg-slate-50 px-1 font-mono text-[10px]">Enter</kbd> to submit
-                    {timerOn && secs === 0 && <span className="ml-2 font-medium text-amber-600">Time's up. Finish your thought and submit.</span>}
-                  </p>
+                <div className="mt-3 flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-slate-100 pt-3">
+                  {timerOn && secs === 0 && (
+                    <p className="mr-auto text-[11px] font-medium text-amber-600 text-pretty">
+                      Time&apos;s up — finish your thought and submit.
+                    </p>
+                  )}
                   <Button variant="accent" onClick={() => void submit()} disabled={phase === "grading" || answer.trim().length === 0}>
                     <Swords className="h-4 w-4" aria-hidden />
                     {phase === "grading" ? "The boss is judging…" : "Submit answer"}
@@ -258,13 +279,13 @@ export function Arena() {
             )}
 
             {phase === "graded" && last && (
-              <section className="space-y-4" aria-live="polite">
+              <section className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain pr-0.5" aria-live="polite">
                 <RoundResult record={last} headingRef={headingRef} roundNumber={records.length} />
                 <CompanionNote
                   mood={coachMood(last.result.score)}
-                  className="flex items-start gap-3 rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 text-xs text-slate-700"
+                  className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 text-xs text-slate-700"
                 >
-                  {coachLine(last, boss, hp)}
+                  <p className="text-pretty leading-relaxed">{coachLine(last, boss, hp)}</p>
                 </CompanionNote>
                 <div className="flex justify-end">
                   <Button variant="accent" onClick={next}>
@@ -275,6 +296,7 @@ export function Arena() {
             )}
 
             {phase === "end" && (
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-0.5">
               <EndScreen
                 boss={boss}
                 records={records}
@@ -284,6 +306,7 @@ export function Arena() {
                 onRematch={() => start(boss.id, questions.map((q) => q.id))}
                 onAddWeak={addWeakSpots}
               />
+              </div>
             )}
           </div>
         </div>
@@ -316,7 +339,7 @@ function BossSelect({ onPick }: { onPick: (id: BossId) => void }) {
               </span>
             </div>
             <p className="text-[11px] text-slate-500">{b.epithet}</p>
-            <p className="mt-3 text-xs italic text-slate-600">&ldquo;{b.taunt}&rdquo;</p>
+            <p className="mt-3 text-xs italic leading-relaxed text-slate-600 text-pretty">&ldquo;{b.taunt}&rdquo;</p>
             <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-[11px]">
               <span className="font-medium text-slate-500">{b.topic}</span>
               <span className="inline-flex items-center gap-1 font-semibold text-indigo-600">
@@ -347,10 +370,10 @@ function BossPanel({
 }) {
   const pct = hp / boss.hp;
   return (
-    <aside className="h-fit rounded-2xl bg-gradient-to-b from-indigo-950 to-slate-950 p-5 text-white lg:sticky lg:top-6">
+    <aside className="flex min-h-0 flex-col rounded-2xl bg-gradient-to-b from-indigo-950 to-slate-950 p-4 text-white md:h-full md:p-5">
       <p className="text-[10px] font-bold uppercase tracking-wider text-cyan-300">Interviewer</p>
       <p className="mt-0.5 text-sm font-semibold">{boss.name}</p>
-      <div className="relative mt-4 flex h-40 items-center justify-center">
+      <div className="relative mt-3 flex min-h-[7rem] flex-1 items-center justify-center md:mt-4 md:min-h-0">
         <div aria-hidden className={cn("absolute inset-6 rounded-full bg-gradient-to-br opacity-30 blur-2xl", boss.tint)} />
         <div key={hit?.key ?? "still"} className={cn("relative", hit && "arena-shake")}>
           <BossArt id={boss.id} size={120} className={cn(!hit && "arena-idle", hp === 0 && "opacity-40 grayscale")} />
@@ -407,7 +430,9 @@ function BossPanel({
           );
         })}
       </ol>
-      <p className="mt-4 text-[11px] text-indigo-300">{boss.hp / 10} damage per point. Knock it to zero to win.</p>
+      <p className="mt-3 shrink-0 text-[11px] leading-relaxed text-indigo-300/95 text-pretty">
+        {boss.hp / 10} damage per point. Knock HP to zero to win.
+      </p>
     </aside>
   );
 }
@@ -484,7 +509,7 @@ function FeedbackList({ title, tone, items }: { title: string; tone: "emerald" |
       <p className={cn("text-[10px] font-bold uppercase tracking-wider", tone === "emerald" ? "text-emerald-600" : "text-amber-600")}>{title}</p>
       <ul className="mt-1.5 space-y-1.5">
         {items.map((s, i) => (
-          <li key={i} className="flex gap-2 text-xs leading-relaxed text-slate-700">
+          <li key={i} className="flex gap-2 text-xs leading-relaxed text-slate-700 text-pretty">
             <span aria-hidden className={cn("mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full", tone === "emerald" ? "bg-emerald-500" : "bg-amber-500")} />
             {s}
           </li>
@@ -533,7 +558,7 @@ function EndScreen({
             <h2 ref={headingRef} tabIndex={-1} className="mt-1 text-xl font-bold tracking-tight focus:outline-none">
               {victory ? `${boss.name} has been defeated.` : boss.defeatLine}
             </h2>
-            <p className="mt-1 max-w-md text-xs text-indigo-200">
+            <p className="mt-1 max-w-lg text-xs leading-relaxed text-indigo-200 text-pretty">
               {victory
                 ? "You explained it, priced it, and solved it. That's the whole interview loop."
                 : "Losing here is cheap. Losing in the real room is not. You now know exactly what to study."}
@@ -563,7 +588,7 @@ function EndScreen({
                   <p className="text-[10px] font-bold uppercase tracking-wider text-indigo-600">
                     R{i + 1} · {ROUND_META[r.question.kind].label}
                   </p>
-                  <p className="mt-0.5 text-xs font-medium text-slate-800">{r.question.prompt}</p>
+                  <p className="mt-0.5 text-xs font-medium leading-relaxed text-slate-800 text-pretty">{r.question.prompt}</p>
                 </div>
                 <span className={cn("shrink-0 text-sm font-bold tabular-nums", r.result.score >= 7 ? "text-emerald-600" : "text-amber-600")}>{r.result.score}/10</span>
               </div>
@@ -589,12 +614,17 @@ function EndScreen({
         </ul>
       </div>
 
-      <CompanionNote mood={victory ? "proud" : "concerned"} className="flex items-start gap-3 rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 text-xs text-slate-700">
-        {victory
-          ? weakCount
-            ? `Good fight. ${weakCount === 1 ? "One round was" : `${weakCount} rounds were`} shaky though. Bank those as review cards so it holds.`
-            : "Clean sweep. Try a harder boss before this starts feeling comfortable."
-          : `Study list: ${(missed.length ? missed : boss.study).slice(0, 3).join("; ")}. Then come back. It'll still be here.`}
+      <CompanionNote
+        mood={victory ? "proud" : "concerned"}
+        className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 text-xs text-slate-700"
+      >
+        <p className="text-pretty leading-relaxed">
+          {victory
+            ? weakCount
+              ? `Good fight. ${weakCount === 1 ? "One round was" : `${weakCount} rounds were`} shaky though. Bank those as review cards so it holds.`
+              : "Clean sweep. Try a harder boss before this starts feeling comfortable."
+            : `Study list: ${(missed.length ? missed : boss.study).slice(0, 3).join("; ")}. Then come back. It'll still be here.`}
+        </p>
       </CompanionNote>
 
       <div className="flex flex-wrap items-center gap-2">

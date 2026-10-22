@@ -14,6 +14,11 @@ function hasDemoCookieInDocument(): boolean {
   return document.cookie.split(";").some((c) => c.trim() === `${DEMO_COOKIE}=1`);
 }
 
+/** Client-only: true when the browser has opted into try-without-account mode. */
+export function hasDemoCookie(): boolean {
+  return hasDemoCookieInDocument();
+}
+
 /**
  * True when the visitor is using DevPath without an account: Supabase is not
  * configured, the deployment opts in via `NEXT_PUBLIC_DEVPATH_DEMO=1`, or (in

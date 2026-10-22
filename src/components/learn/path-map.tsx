@@ -100,7 +100,7 @@ export function PathMap() {
   const sheetMod = sheet ? DSA_SYLLABUS.find((m) => m.slug === sheet) : null;
 
   return (
-    <div className="relative">
+    <div className="relative h-full min-h-0 overflow-y-auto overscroll-contain pb-4 pr-1">
       {engine.onboarding?.goal && (
         <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-800">
           <Map className="h-3.5 w-3.5" aria-hidden />

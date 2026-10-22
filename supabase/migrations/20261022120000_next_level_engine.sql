@@ -45,22 +45,15 @@ CREATE TABLE IF NOT EXISTS companion_memory (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS user_achievements (
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  achievement_id TEXT NOT NULL,
-  unlocked_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  PRIMARY KEY (user_id, achievement_id)
-);
+-- user_achievements already exists in 20251017100000_sait_dsa_schema.sql (legacy shape).
 
 CREATE INDEX IF NOT EXISTS idx_xp_events_user_created ON xp_events(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_review_cards_user_due ON review_cards(user_id, due_at);
-CREATE INDEX IF NOT EXISTS idx_user_achievements_user ON user_achievements(user_id);
 
 ALTER TABLE engine_snapshots ENABLE ROW LEVEL SECURITY;
 ALTER TABLE xp_events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE review_cards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE companion_memory ENABLE ROW LEVEL SECURITY;
-ALTER TABLE user_achievements ENABLE ROW LEVEL SECURITY;
 
 -- Own-row policies (select / insert / update / delete) for authenticated users.
 -- DO blocks keep the migration re-runnable (CREATE POLICY has no IF NOT EXISTS).
@@ -68,7 +61,7 @@ DO $$
 DECLARE
   t TEXT;
 BEGIN
-  FOREACH t IN ARRAY ARRAY['engine_snapshots', 'xp_events', 'review_cards', 'companion_memory', 'user_achievements']
+  FOREACH t IN ARRAY ARRAY['engine_snapshots', 'xp_events', 'review_cards', 'companion_memory']
   LOOP
     IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = t AND policyname = 'Users select own ' || t) THEN
       EXECUTE format('CREATE POLICY %I ON %I FOR SELECT TO authenticated USING ((SELECT auth.uid()) = user_id)', 'Users select own ' || t, t);

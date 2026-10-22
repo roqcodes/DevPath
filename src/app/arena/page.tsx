@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function ArenaPage() {
   return (
-    <AppLayout>
+    <AppLayout wideContent>
       <Arena />
     </AppLayout>
   );

@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { use } from "react";
 import { AppLayout } from "@/components/layout/app-layout";
+import { PageHeader, PageScroll } from "@/components/layout/page-shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getModule } from "@/lib/data/dsa-syllabus";
 import { useApp } from "@/lib/context/app-context";
-import { CheckCircle2, ChevronLeft, Circle } from "lucide-react";
+import { CheckCircle2, Circle } from "lucide-react";
 
 export default function ModulePage({ params }: { params: Promise<{ module: string }> }) {
   const { module: moduleSlug } = use(params);
@@ -25,19 +26,13 @@ export default function ModulePage({ params }: { params: Promise<{ module: strin
 
   return (
     <AppLayout>
-      <div className="mb-6">
-        <Link
-          href="/learn"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ChevronLeft className="h-4 w-4" aria-hidden />
-          Syllabus
-        </Link>
-        <h1 className="text-2xl font-semibold mt-2">{mod.title}</h1>
-        <p className="text-muted-foreground mt-1">{mod.description}</p>
-      </div>
-
-      <div className="space-y-3">
+      <PageHeader
+        backHref="/learn"
+        backLabel="Syllabus"
+        title={mod.title}
+        description={mod.description}
+      />
+      <PageScroll className="gap-3">
         {mod.lessons.map((lesson, index) => {
           const done = state.progress.completedLessons.includes(lesson.id);
           return (
@@ -65,7 +60,7 @@ export default function ModulePage({ params }: { params: Promise<{ module: strin
             </Card>
           );
         })}
-      </div>
+      </PageScroll>
     </AppLayout>
   );
 }

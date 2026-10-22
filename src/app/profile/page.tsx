@@ -16,6 +16,7 @@ import {
   User,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/app-layout";
+import { PageScroll } from "@/components/layout/page-shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -46,7 +47,7 @@ export default function ProfilePage() {
 
   return (
     <AppLayout>
-      <div className="space-y-6 animate-fade-in pb-12">
+      <PageScroll>
         {/* Profile Card Header (Inspired by Reference 2) */}
         <div className="rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/70 via-white to-sky-50/40 p-6 lg:p-8 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
@@ -296,7 +297,7 @@ export default function ProfilePage() {
             </Card>
           </div>
         </div>
-      </div>
+      </PageScroll>
     </AppLayout>
   );
 }
