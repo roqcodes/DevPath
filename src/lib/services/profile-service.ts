@@ -1,9 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import {
-  createLocalProfile,
-  localStore,
-} from "./local-store";
 import type { AuthUser, UserProfile } from "@/lib/types/profile";
 
 interface ProfileRow {
@@ -18,6 +14,23 @@ interface ProfileRow {
   onboarding_completed: boolean;
   created_at: string;
   updated_at: string;
+}
+
+function defaultProfileFromUser(user: Pick<AuthUser, "id" | "email" | "fullName">, data?: Partial<UserProfile>): UserProfile {
+  const now = new Date().toISOString();
+  return {
+    id: user.id,
+    fullName: data?.fullName ?? user.fullName ?? "",
+    email: data?.email ?? user.email,
+    role: data?.role ?? null,
+    experienceLevel: data?.experienceLevel ?? null,
+    learningGoal: data?.learningGoal ?? null,
+    learningDuration: data?.learningDuration ?? null,
+    dailyTime: data?.dailyTime ?? null,
+    onboardingCompleted: data?.onboardingCompleted ?? false,
+    createdAt: data?.createdAt ?? now,
+    updatedAt: now,
+  };
 }
 
 function mapRowToProfile(row: ProfileRow): UserProfile {
@@ -50,12 +63,10 @@ function mapProfileToRow(profile: Partial<UserProfile>): Record<string, unknown>
 }
 
 export async function getProfile(userId: string): Promise<UserProfile | null> {
-  if (!isSupabaseConfigured()) {
-    return localStore.getProfile(userId);
-  }
+  if (!isSupabaseConfigured()) return null;
 
   const supabase = createClient();
-  if (!supabase) return localStore.getProfile(userId);
+  if (!supabase) return null;
 
   try {
     const { data, error } = await supabase
@@ -64,77 +75,55 @@ export async function getProfile(userId: string): Promise<UserProfile | null> {
       .eq("id", userId)
       .single();
 
-    if (error || !data) {
-      return localStore.getProfile(userId);
-    }
+    if (error || !data) return null;
 
     return mapRowToProfile(data as ProfileRow);
   } catch {
-    return localStore.getProfile(userId);
+    return null;
   }
 }
 
 export async function createProfile(user: AuthUser): Promise<UserProfile> {
-  const profile = createLocalProfile(user);
+  const profile = defaultProfileFromUser(user);
 
   if (!isSupabaseConfigured()) {
-    localStore.setProfile(profile);
-    return profile;
+    throw new Error("Supabase is not configured");
   }
 
   const supabase = createClient();
   if (!supabase) {
-    localStore.setProfile(profile);
-    return profile;
+    throw new Error("Supabase client unavailable");
   }
 
-  try {
-    const { data, error } = await supabase
-      .from("profiles")
-      .upsert({
-        id: user.id,
-        full_name: user.fullName ?? "",
-        email: user.email,
-        onboarding_completed: false,
-      })
-      .select()
-      .single();
+  const { data, error } = await supabase
+    .from("profiles")
+    .upsert({
+      id: user.id,
+      full_name: user.fullName ?? "",
+      email: user.email,
+      onboarding_completed: false,
+    })
+    .select()
+    .single();
 
-    if (error || !data) {
-      localStore.setProfile(profile);
-      return profile;
-    }
-
-    const mapped = mapRowToProfile(data as ProfileRow);
-    localStore.setProfile(mapped);
-    return mapped;
-  } catch {
-    localStore.setProfile(profile);
-    return profile;
+  if (error || !data) {
+    throw new Error(error?.message ?? "Unable to create profile");
   }
+
+  return mapRowToProfile(data as ProfileRow);
 }
 
 export async function updateProfile(
   userId: string,
   updates: Partial<UserProfile>
 ): Promise<{ success: boolean; profile?: UserProfile; error?: string }> {
-  const existing = await getProfile(userId);
-  const base = existing ?? createLocalProfile({ id: userId, email: "", fullName: "" });
-  const updated: UserProfile = {
-    ...base,
-    ...updates,
-    updatedAt: new Date().toISOString(),
-  };
-
   if (!isSupabaseConfigured()) {
-    localStore.setProfile(updated);
-    return { success: true, profile: updated };
+    return { success: false, error: "Supabase is not configured" };
   }
 
   const supabase = createClient();
   if (!supabase) {
-    localStore.setProfile(updated);
-    return { success: true, profile: updated };
+    return { success: false, error: "Supabase client unavailable" };
   }
 
   try {
@@ -147,16 +136,13 @@ export async function updateProfile(
 
     if (error) {
       console.error("[Profile] Update failed:", error.message);
-      localStore.setProfile(updated);
-      return { success: true, profile: updated };
+      return { success: false, error: "Unable to save your profile. Please try again." };
     }
 
     const mapped = mapRowToProfile(data as ProfileRow);
-    localStore.setProfile(mapped);
     return { success: true, profile: mapped };
   } catch {
-    localStore.setProfile(updated);
-    return { success: true, profile: updated };
+    return { success: false, error: "Unable to save your profile. Please try again." };
   }
 }
 

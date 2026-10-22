@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sait-dsa.cusat.dev/schemas/problem-bank.schema.json",
+  "title": "SAIT DSA Problem",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "id",
+    "title",
+    "difficulty",
+    "topics",
+    "statement",
+    "examples",
+    "constraints",
+    "execution",
+    "test_cases",
+    "hints",
+    "review_status"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "title": { "type": "string", "minLength": 1 },
+    "difficulty": { "enum": ["easy", "medium", "hard"] },
+    "topics": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "prerequisites": { "type": "array", "items": { "type": "string" } },
+    "statement": { "type": "string", "minLength": 1 },
+    "examples": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["input", "output"],
+        "properties": {
+          "input": { "type": "string" },
+          "output": { "type": "string" },
+          "explanation": { "type": "string" }
+        }
+      }
+    },
+    "constraints": { "type": "array", "items": { "type": "string" } },
+    "execution": {
+      "type": "object",
+      "required": ["time_limit_ms", "memory_limit_kb", "supported_languages"],
+      "properties": {
+        "time_limit_ms": { "type": "integer", "minimum": 100 },
+        "memory_limit_kb": { "type": "integer", "minimum": 1024 },
+        "supported_languages": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "stdin_mode": { "enum": ["single", "lines"] },
+        "comparison": { "enum": ["exact", "trimmed"] }
+      }
+    },
+    "reference_solutions": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "test_cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "is_public", "input", "expected_output"],
+        "properties": {
+          "id": { "type": "string" },
+          "is_public": { "type": "boolean" },
+          "input": { "type": "string" },
+          "expected_output": { "type": "string" }
+        }
+      }
+    },
+    "hints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["order", "text"],
+        "properties": {
+          "order": { "type": "integer", "minimum": 1 },
+          "text": { "type": "string" }
+        }
+      }
+    },
+    "editorial": { "type": "string" },
+    "provenance": { "type": "object" },
+    "review_status": { "enum": ["draft", "review", "published", "archived"] }
+  }
+}

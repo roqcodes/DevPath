@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import { createLocalUser, localStore } from "./local-store";
 import type { AuthUser } from "@/lib/types/profile";
 
 export type AuthErrorCode =
@@ -8,6 +7,7 @@ export type AuthErrorCode =
   | "duplicate_account"
   | "network_error"
   | "weak_password"
+  | "not_configured"
   | "unknown";
 
 export interface AuthResult {
@@ -15,6 +15,8 @@ export interface AuthResult {
   user?: AuthUser;
   error?: string;
   errorCode?: AuthErrorCode;
+  /** Supabase may require email confirmation before a session exists. */
+  needsEmailVerification?: boolean;
 }
 
 function mapAuthError(message: string): { error: string; errorCode: AuthErrorCode } {
@@ -34,28 +36,23 @@ function mapAuthError(message: string): { error: string; errorCode: AuthErrorCod
   return { error: "Something went wrong. Please try again.", errorCode: "unknown" };
 }
 
+function authUnavailable(): AuthResult {
+  return {
+    success: false,
+    error: "Authentication is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.",
+    errorCode: "not_configured",
+  };
+}
+
 export async function signUp(
   email: string,
   password: string,
   fullName: string
 ): Promise<AuthResult> {
-  if (!isSupabaseConfigured()) {
-    const existing = localStore.getSession();
-    if (existing?.email === email) {
-      return { success: false, error: "An account with this email already exists.", errorCode: "duplicate_account" };
-    }
-    if (password.length < 8) {
-      return { success: false, error: "Password must be at least 8 characters.", errorCode: "weak_password" };
-    }
-    const user = createLocalUser(email, fullName);
-    localStore.setSession(user);
-    return { success: true, user };
-  }
+  if (!isSupabaseConfigured()) return authUnavailable();
 
   const supabase = createClient();
-  if (!supabase) {
-    return { success: false, error: "Authentication is unavailable.", errorCode: "network_error" };
-  }
+  if (!supabase) return authUnavailable();
 
   try {
     const { data, error } = await supabase.auth.signUp({
@@ -80,6 +77,7 @@ export async function signUp(
         email: data.user.email ?? email,
         fullName,
       },
+      needsEmailVerification: !data.session,
     };
   } catch {
     return { success: false, error: "Unable to connect. Check your connection and try again.", errorCode: "network_error" };
@@ -87,18 +85,10 @@ export async function signUp(
 }
 
 export async function signIn(email: string, password: string): Promise<AuthResult> {
-  if (!isSupabaseConfigured()) {
-    const user = localStore.getSession();
-    if (!user || user.email !== email) {
-      return { success: false, error: "Invalid email or password. Please try again.", errorCode: "invalid_credentials" };
-    }
-    return { success: true, user };
-  }
+  if (!isSupabaseConfigured()) return authUnavailable();
 
   const supabase = createClient();
-  if (!supabase) {
-    return { success: false, error: "Authentication is unavailable.", errorCode: "network_error" };
-  }
+  if (!supabase) return authUnavailable();
 
   try {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -126,10 +116,7 @@ export async function signIn(email: string, password: string): Promise<AuthResul
 }
 
 export async function signOut(): Promise<void> {
-  if (!isSupabaseConfigured()) {
-    localStore.clearSession();
-    return;
-  }
+  if (!isSupabaseConfigured()) return;
 
   const supabase = createClient();
   if (supabase) {
@@ -138,12 +125,10 @@ export async function signOut(): Promise<void> {
 }
 
 export async function getCurrentUser(): Promise<AuthUser | null> {
-  if (!isSupabaseConfigured()) {
-    return localStore.getSession();
-  }
+  if (!isSupabaseConfigured()) return null;
 
   const supabase = createClient();
-  if (!supabase) return localStore.getSession();
+  if (!supabase) return null;
 
   try {
     const { data: { user }, error } = await supabase.auth.getUser();
@@ -155,6 +140,6 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
       fullName: user.user_metadata?.full_name as string | undefined,
     };
   } catch {
-    return localStore.getSession();
+    return null;
   }
 }

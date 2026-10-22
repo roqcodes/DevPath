@@ -1,5 +1,5 @@
-import { AssessmentFlow } from "@/components/assessment/assessment-flow";
+import { redirect } from "next/navigation";
 
-export default function AssessmentPage() {
-  return <AssessmentFlow />;
+export default function AssessmentRedirect() {
+  redirect("/onboarding");
 }

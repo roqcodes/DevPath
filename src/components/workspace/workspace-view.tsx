@@ -24,6 +24,8 @@ import { getWorkspaceTabs } from "@/lib/workspace/workspace-tabs";
 import { useApp } from "@/lib/context/app-context";
 import type { WorkspaceGitState } from "@/lib/types/app";
 import { cn } from "@/lib/utils";
+import { TerminalOutputLine } from "@/components/shared/terminal-output-line";
+import { isTerminalOkLine } from "@/lib/ui/terminal-lines";
 
 interface WorkspaceViewProps {
   moduleSlug: string;
@@ -278,19 +280,18 @@ export function WorkspaceView({ moduleSlug }: WorkspaceViewProps) {
                   </div>
                   <div className="flex-1 overflow-y-auto p-4 space-y-1">
                     {terminalLines.map((line, i) => (
-                      <div
+                      <TerminalOutputLine
                         key={i}
+                        line={line}
                         className={cn(
                           "whitespace-pre-wrap animate-fade-in",
-                          line.startsWith("✓")
-                            ? "text-green-400 font-medium"
+                          isTerminalOkLine(line)
+                            ? "text-green-400"
                             : line.startsWith("$")
                               ? "text-zinc-400"
                               : "text-zinc-300"
                         )}
-                      >
-                        {line}
-                      </div>
+                      />
                     ))}
                     {running && <div className="text-zinc-500 animate-pulse-subtle">...</div>}
                   </div>

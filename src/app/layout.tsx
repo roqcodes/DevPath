@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DevPath AI — Your personalized path to becoming DevOps-ready",
+  title: "SAIT DSA — CUSAT peer learning & practice",
   description:
-    "DevPath AI adapts a DevOps learning journey to your current skills, goals, and available time.",
+    "Structured DSA syllabus, searchable question bank, and peer rankings for SAIT (IT & AI) at CUSAT.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

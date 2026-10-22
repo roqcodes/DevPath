@@ -1,25 +1,31 @@
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import { createMockLearningPath } from "@/lib/data/mock-learning-path";
-import { localStore } from "./local-store";
 import { createProfile, getProfile, updateProfile } from "./profile-service";
 import { getCurrentUser } from "./auth-service";
 import type { OnboardingData, SkillAssessment } from "@/lib/types/profile";
 
-const ONBOARDING_DRAFT_KEY = "devpath_onboarding_step";
+const ONBOARDING_DRAFT_KEY = "devpath_onboarding_draft";
+const ONBOARDING_DRAFT_STEP_KEY = "devpath_onboarding_step";
 
 export function getOnboardingDraft(): Partial<OnboardingData> {
-  return localStore.getOnboardingDraft() ?? {};
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = localStorage.getItem(ONBOARDING_DRAFT_KEY);
+    return raw ? (JSON.parse(raw) as Partial<OnboardingData>) : {};
+  } catch {
+    return {};
+  }
 }
 
 export function saveOnboardingDraft(draft: Partial<OnboardingData>): void {
-  localStore.setOnboardingDraft(draft);
+  if (typeof window === "undefined") return;
+  localStorage.setItem(ONBOARDING_DRAFT_KEY, JSON.stringify(draft));
 }
 
 export function getOnboardingStep(): number {
   if (typeof window === "undefined") return 1;
   try {
-    const step = localStorage.getItem(ONBOARDING_DRAFT_KEY);
+    const step = localStorage.getItem(ONBOARDING_DRAFT_STEP_KEY);
     return step ? parseInt(step, 10) : 1;
   } catch {
     return 1;
@@ -28,14 +34,13 @@ export function getOnboardingStep(): number {
 
 export function saveOnboardingStep(step: number): void {
   if (typeof window === "undefined") return;
-  localStorage.setItem(ONBOARDING_DRAFT_KEY, String(step));
+  localStorage.setItem(ONBOARDING_DRAFT_STEP_KEY, String(step));
 }
 
 export function clearOnboardingDraft(): void {
-  localStore.clearOnboardingDraft();
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(ONBOARDING_DRAFT_KEY);
-  }
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(ONBOARDING_DRAFT_KEY);
+  localStorage.removeItem(ONBOARDING_DRAFT_STEP_KEY);
 }
 
 export async function saveInterests(
@@ -43,11 +48,11 @@ export async function saveInterests(
   topics: string[]
 ): Promise<{ success: boolean; error?: string }> {
   if (!isSupabaseConfigured()) {
-    return { success: true };
+    return { success: false, error: "Database is not configured" };
   }
 
   const supabase = createClient();
-  if (!supabase) return { success: true };
+  if (!supabase) return { success: false, error: "Database is not configured" };
 
   try {
     await supabase.from("user_interests").delete().eq("user_id", userId);
@@ -72,11 +77,11 @@ export async function saveSkillAssessment(
   assessments: SkillAssessment[]
 ): Promise<{ success: boolean; error?: string }> {
   if (!isSupabaseConfigured()) {
-    return { success: true };
+    return { success: false, error: "Database is not configured" };
   }
 
   const supabase = createClient();
-  if (!supabase) return { success: true };
+  if (!supabase) return { success: false, error: "Database is not configured" };
 
   try {
     await supabase.from("user_skill_assessment").delete().eq("user_id", userId);
@@ -137,8 +142,6 @@ export async function completeOnboarding(
     return assessmentResult;
   }
 
-  const learningPath = createMockLearningPath(user.id, data.fullName);
-  localStore.setLearningPath(learningPath);
   clearOnboardingDraft();
 
   return { success: true };

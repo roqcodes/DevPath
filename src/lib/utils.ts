@@ -11,3 +11,7 @@ export function getGreeting(): string {
   if (hour < 17) return "Good afternoon";
   return "Good evening";
 }
+
+export function todayIsoDate(): string {
+  return new Date().toISOString().slice(0, 10);
+}

@@ -1,0 +1,38 @@
+{
+  "schema_version": "2.0.0",
+  "id": "array-sum",
+  "slug": "array-sum",
+  "title": "Sum of an Array",
+  "difficulty": { "label": "beginner", "score": 150 },
+  "topics": ["arrays"],
+  "prerequisites": [],
+  "status": "published",
+  "revision": 1,
+  "estimated_minutes": 10,
+  "provenance": { "author": "SAIT DSA", "license": "CC-BY-4.0", "source": "original" },
+  "statement": "Given n integers, print their sum.",
+  "io_format": {
+    "mode": "stdin_stdout",
+    "input_description": "Line 1: n. Line 2: n space-separated integers.",
+    "output_description": "Single integer: the sum."
+  },
+  "constraints": ["1 <= n <= 10^5", "|values| <= 10^9"],
+  "examples": [{ "input": "3\n1 2 3", "output": "6" }],
+  "execution": {
+    "time_limit_ms": 2000,
+    "memory_limit_kb": 262144,
+    "comparison": "trimmed_lines",
+    "languages": ["python", "cpp", "java"]
+  },
+  "test_cases": [
+    { "id": "pub-1", "is_public": true, "input": "3\n1 2 3", "expected_output": "6" },
+    { "id": "pub-2", "is_public": true, "input": "1\n-5", "expected_output": "-5" },
+    { "id": "hid-1", "is_public": false, "input": "5\n10 0 -3 7 2", "expected_output": "16" }
+  ],
+  "hints": [{ "order": 1, "text": "Read n, then accumulate in a loop." }],
+  "editorial": "Single pass O(n) time, O(1) extra space.",
+  "complexity": { "time": "O(n)", "space": "O(1)" },
+  "reference_solutions": {
+    "python": "import sys\nlines = sys.stdin.read().strip().split()\nn = int(lines[0])\nnums = list(map(int, lines[1:1+n]))\nprint(sum(nums))\n"
+  }
+}

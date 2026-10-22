@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sait-dsa.cusat.dev/question-bank/question.schema.json",
+  "title": "SAIT DSA Question Package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "slug",
+    "title",
+    "difficulty",
+    "topics",
+    "status",
+    "revision",
+    "estimated_minutes",
+    "provenance",
+    "statement",
+    "io_format",
+    "constraints",
+    "examples",
+    "execution",
+    "test_cases",
+    "hints",
+    "reference_solutions"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$", "maxLength": 64 },
+    "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$", "maxLength": 64 },
+    "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "difficulty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "score"],
+      "properties": {
+        "label": {
+          "type": "string",
+          "enum": ["beginner", "easy", "intermediate", "advanced", "expert"]
+        },
+        "score": { "type": "integer", "minimum": 1, "maximum": 1000 }
+      }
+    },
+    "topics": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": { "type": "string", "pattern": "^[a-z0-9-]+$" }
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "review", "published", "archived"]
+    },
+    "revision": { "type": "integer", "minimum": 1 },
+    "estimated_minutes": { "type": "integer", "minimum": 1, "maximum": 240 },
+    "provenance": {
+      "type": "object",
+      "required": ["author", "license"],
+      "additionalProperties": true,
+      "properties": {
+        "author": { "type": "string" },
+        "license": { "type": "string" },
+        "source": { "type": "string" },
+        "attribution": { "type": "string" }
+      }
+    },
+    "statement": { "type": "string", "minLength": 1, "maxLength": 50000 },
+    "io_format": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "input_description", "output_description"],
+      "properties": {
+        "mode": { "const": "stdin_stdout" },
+        "input_description": { "type": "string", "minLength": 1 },
+        "output_description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "type": "string", "maxLength": 500 }
+    },
+    "examples": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["input", "output"],
+        "properties": {
+          "input": { "type": "string", "maxLength": 10000 },
+          "output": { "type": "string", "maxLength": 10000 },
+          "explanation": { "type": "string", "maxLength": 5000 }
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["time_limit_ms", "memory_limit_kb", "comparison", "languages"],
+      "properties": {
+        "time_limit_ms": { "type": "integer", "minimum": 100, "maximum": 30000 },
+        "memory_limit_kb": { "type": "integer", "minimum": 1024, "maximum": 1048576 },
+        "comparison": {
+          "type": "string",
+          "enum": ["exact", "trimmed", "trimmed_lines"]
+        },
+        "languages": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "enum": ["python", "cpp", "java"] }
+        }
+      }
+    },
+    "test_cases": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "is_public", "input", "expected_output"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-zA-Z0-9_-]+$" },
+          "is_public": { "type": "boolean" },
+          "input": { "type": "string", "maxLength": 50000 },
+          "expected_output": { "type": "string", "maxLength": 50000 },
+          "description": { "type": "string", "maxLength": 500 }
+        }
+      }
+    },
+    "hints": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["order", "text"],
+        "properties": {
+          "order": { "type": "integer", "minimum": 1 },
+          "text": { "type": "string", "maxLength": 2000 }
+        }
+      }
+    },
+    "editorial": { "type": "string", "maxLength": 50000 },
+    "complexity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "time": { "type": "string", "maxLength": 100 },
+        "space": { "type": "string", "maxLength": 100 },
+        "analysis": { "type": "string", "maxLength": 5000 }
+      }
+    },
+    "reference_solutions": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "string", "maxLength": 100000 }
+    }
+  }
+}

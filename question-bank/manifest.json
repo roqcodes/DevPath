@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0.0",
+  "name": "SAIT DSA pilot bank",
+  "description": "10 reviewed problems proving the import and judge pipeline",
+  "target_count": 100,
+  "pilot_count": 10
+}
