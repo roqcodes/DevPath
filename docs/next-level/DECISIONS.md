@@ -9,3 +9,6 @@
 - Agents may not run `npm run build`/`next dev` concurrently (shared `.next` on Windows); they typecheck with `tsc`; the lead runs the build at integration.
 - First-wave subagents hit model usage limits before finishing; Composer 2.5 respin plus lead integration shipped the stack, with `/path` and `/review` added where Learning Core stalled.
 - Wired `reduceEvent` to the rules modules Agent G left on disk so XP, streaks, quests, achievements, review queue, and celebrations actually run.
+- Review UI grades only via `dispatchEngine(review_graded)` — removed duplicate SM-2 scheduling in `ReviewSession` so the engine reducer is the single source of truth.
+- V14 tokens as CSS variables + `@theme inline`; toast module store + native `<dialog>` (no Radix/sonner) per design system workstream.
+- Plain-text `/api/ai` stream with `X-AI-Source` and live→demo fallback; demo caller bypass matches proxy demo mode.

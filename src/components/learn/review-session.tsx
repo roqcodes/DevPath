@@ -3,13 +3,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { dispatchEngine, updateEngine, useEngine, type ReviewGrade } from "@/lib/engine";
+import { dueCards as engineDueCards } from "@/lib/engine/rules/review";
 import { CompanionAvatar, CompanionNote } from "@/components/companion";
 import { CountUp, celebrate } from "@/components/motion";
 import { useReducedMotion } from "@/lib/motion/reduced-motion";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { foundationSeedCards } from "./review-seeds";
-import { dueCards, nextDueAt, scheduleCardAfterGrade } from "./review-schedule";
+import { nextDueAt } from "./review-schedule";
 import { cn } from "@/lib/utils";
 
 const GRADES: { grade: ReviewGrade; label: string; key: string }[] = [
@@ -35,7 +36,7 @@ export function ReviewSession() {
     });
   }, []);
 
-  const queue = useMemo(() => dueCards(engine.reviewQueue), [engine.reviewQueue]);
+  const queue = useMemo(() => engineDueCards(engine.reviewQueue), [engine.reviewQueue]);
   const card = queue[0];
   const total = queue.length;
   const progressPct = total ? Math.round((graded / Math.max(graded + total, 1)) * 100) : 100;
@@ -44,10 +45,6 @@ export function ReviewSession() {
     (g: ReviewGrade) => {
       if (!card) return;
       dispatchEngine({ type: "review_graded", cardId: card.id, grade: g });
-      updateEngine((s) => ({
-        ...s,
-        reviewQueue: s.reviewQueue.map((c) => (c.id === card.id ? scheduleCardAfterGrade(c, g) : c)),
-      }));
       setGraded((n) => n + 1);
       setShowBack(false);
       setFlip(false);
