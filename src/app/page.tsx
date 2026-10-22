@@ -1,124 +1,180 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowRight, BookOpen, Code2, Play, Target, Trophy, Users } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+  ArrowRight,
+  GitBranch,
+  Medal,
+  Sparkles,
+  Swords,
+  Zap,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/shared/logo";
+import { Reveal } from "@/components/motion";
+import { enableDemoCookie } from "@/lib/auth/demo";
 
-const FEATURES = [
+const PILLARS = [
   {
-    icon: BookOpen,
-    title: "Practice-first syllabus",
-    description: "Twelve DSA modules with short lessons, checkpoints, and linked problems.",
+    icon: GitBranch,
+    title: "Path map",
+    copy: "One glowing node. Five minutes. Then the next.",
   },
   {
-    icon: Code2,
-    title: "Question bank",
-    description: "Filter by topic, difficulty, and progress. Submit code through a secure judge boundary.",
+    icon: Swords,
+    title: "Arena",
+    copy: "Mock interviews with Kip watching your weak spots.",
   },
   {
-    icon: Target,
-    title: "Daily goals",
-    description: "Know what to study next with lessons, problems, and consistency tracking.",
+    icon: Medal,
+    title: "Achievements",
+    copy: "Identity cards you actually want to share.",
   },
   {
-    icon: Trophy,
-    title: "Peer rankings",
-    description: "Compare progress within your batch, department, and across CUSAT.",
-  },
-  {
-    icon: Users,
-    title: "Built for SAIT",
-    description: "Exclusive foundation for IT and AI students at CUSAT — extensible membership checks.",
+    icon: Sparkles,
+    title: "Wrapped",
+    copy: "Your term, story-sized — not another leaderboard flex.",
   },
 ];
 
 export default function LandingPage() {
+  const router = useRouter();
+
+  function tryWithoutAccount() {
+    enableDemoCookie();
+    router.push("/start");
+  }
+
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border">
+    <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-40"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 20% 20%, rgba(79,70,229,0.35), transparent 45%), radial-gradient(circle at 80% 10%, rgba(34,211,238,0.25), transparent 40%), radial-gradient(circle at 50% 80%, rgba(249,115,22,0.12), transparent 50%)",
+        }}
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.07]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+        }}
+        aria-hidden
+      />
+
+      <header className="relative border-b border-white/10">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 lg:px-8">
-          <Logo />
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" asChild>
+          <Logo href="/" size="sm" tone="onDark" />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Button variant="ghost" className="text-indigo-100 hover:text-white hover:bg-white/10" asChild>
               <Link href="/login">Sign in</Link>
             </Button>
-            <Button asChild>
+            <Button className="bg-white text-indigo-950 hover:bg-cyan-50" asChild>
               <Link href="/signup">Join SAIT DSA</Link>
             </Button>
           </div>
         </div>
       </header>
 
-      <section className="mx-auto max-w-6xl px-4 py-20 lg:px-8 lg:py-24">
-        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-          <div className="animate-fade-in">
-            <p className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              CUSAT · School of IT
+      <section className="relative mx-auto max-w-6xl px-4 py-16 lg:px-8 lg:py-24">
+        <div className="grid gap-14 lg:grid-cols-2 lg:items-center">
+          <Reveal className="m-rise">
+            <p className="mb-3 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-cyan-300/90">
+              <Zap className="h-3.5 w-3.5" />
+              DevPath · zero-config demo
             </p>
-            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-              Learn DSA with your batch.
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">
+              DSA that feels like{" "}
+              <span className="bg-gradient-to-r from-cyan-300 via-indigo-200 to-white bg-clip-text text-transparent">
+                a game you can win
+              </span>
+              .
             </h1>
-            <p className="mt-4 text-lg text-muted-foreground max-w-lg">
-              SAIT DSA combines a structured syllabus, a searchable problem bank, and peer rankings so you
-              always know what to study next and can prove your progress.
+            <p className="mt-5 text-lg text-indigo-200/90 max-w-lg leading-relaxed">
+              Structured syllabus, real code on the judge, spaced review, and a living path map — built for
+              CUSAT IT &amp; AI, playable in demo mode with no backend setup.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button size="lg" asChild>
-                <Link href="/signup">
-                  Get started
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Button size="lg" className="bg-indigo-500 hover:bg-indigo-400 text-white shadow-lg" onClick={tryWithoutAccount}>
+                Try without an account
+                <ArrowRight className="h-4 w-4" />
               </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link href="/dashboard">
-                  <Play className="h-4 w-4" />
-                  Open workspace
-                </Link>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white/20 bg-white/5 text-white hover:bg-white/10"
+                asChild
+              >
+                <Link href="/dashboard">Open workspace</Link>
               </Button>
             </div>
-          </div>
+            <p className="mt-4 text-[11px] text-indigo-300/70">
+              Sets <code className="font-mono text-cyan-200/80">devpath_demo=1</code> and walks you through
+              4 steps on <Link href="/start" className="underline hover:text-white">/start</Link>.
+            </p>
+          </Reveal>
 
-          <div className="rounded-xl border border-border bg-card p-6 shadow-sm animate-fade-in">
-            <p className="text-sm font-medium">Today&apos;s plan</p>
-            <ul className="mt-4 space-y-3 text-sm">
-              <li className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-accent" />
-                Finish one lesson in Arrays &amp; strings
-              </li>
-              <li className="flex items-center gap-2 text-muted-foreground">
-                <span className="h-2 w-2 rounded-full bg-border" />
-                Solve two practice problems
-              </li>
-              <li className="flex items-center gap-2 text-muted-foreground">
-                <span className="h-2 w-2 rounded-full bg-border" />
-                Review one difficult topic
-              </li>
-            </ul>
-          </div>
+          <Reveal delay={80} className="relative m-rise">
+            <div className="rounded-3xl border border-white/15 bg-gradient-to-br from-indigo-900/80 via-slate-900/90 to-slate-950 p-6 shadow-lg backdrop-blur-md lg:p-8">
+              <div className="flex items-center justify-between text-xs font-semibold text-indigo-200">
+                <span>Live path preview</span>
+                <span className="rounded-full bg-cyan-500/20 px-2 py-0.5 text-cyan-200 ring-1 ring-cyan-400/30">
+                  Node 0 · glowing
+                </span>
+              </div>
+              <div className="mt-6 grid grid-cols-3 gap-3">
+                {[0, 1, 2, 3, 4, 5].map((n) => (
+                  <div
+                    key={n}
+                    className={
+                      n === 0
+                        ? "col-span-1 flex aspect-square items-center justify-center rounded-2xl border border-cyan-400/50 bg-cyan-500/20 m-glow"
+                        : "aspect-square rounded-2xl border border-white/10 bg-white/5 opacity-50"
+                    }
+                  >
+                    {n === 0 && <GitBranch className="h-6 w-6 text-cyan-300 m-float" aria-hidden />}
+                  </div>
+                ))}
+              </div>
+              <ul className="mt-6 space-y-2 text-sm text-indigo-100/90">
+                <li className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-cyan-400" />
+                  Today: one lesson + two problems
+                </li>
+                <li className="flex items-center gap-2 text-indigo-300/70">
+                  <span className="h-2 w-2 rounded-full bg-white/20" />
+                  Review queue warms up after your first quiz
+                </li>
+              </ul>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      <section className="border-t border-border bg-muted/30">
+      <section className="relative border-t border-white/10 bg-white/[0.02]">
         <div className="mx-auto max-w-6xl px-4 py-16 lg:px-8">
-          <h2 className="text-center text-2xl font-semibold tracking-tight">Study · Practice · Rank</h2>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {FEATURES.map((feature) => (
-              <div
-                key={feature.title}
-                className="rounded-lg border border-border bg-card p-6 transition-colors hover:border-accent/30"
-              >
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-accent/10">
-                  <feature.icon className="h-5 w-5 text-accent" aria-hidden />
+          <h2 className="text-center text-2xl font-semibold tracking-tight">Study · Compete · Share</h2>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 m-stagger">
+            {PILLARS.map((p, i) => (
+              <Reveal key={p.title} delay={i * 50} className="rounded-2xl border border-white/10 bg-white/5 p-5 hover-lift">
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/20 text-cyan-300 ring-1 ring-white/10">
+                  <p.icon className="h-5 w-5" aria-hidden />
                 </div>
-                <h3 className="font-semibold">{feature.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
-              </div>
+                <h3 className="font-semibold">{p.title}</h3>
+                <p className="mt-2 text-sm text-indigo-200/80 leading-relaxed">{p.copy}</p>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      <footer className="border-t border-border py-8 text-center text-sm text-muted-foreground">
-        SAIT DSA — peer learning for CUSAT IT &amp; AI
+      <footer className="relative border-t border-white/10 py-8 text-center text-sm text-indigo-300/70">
+        DevPath — peer learning for CUSAT IT &amp; AI · Press <kbd className="font-mono text-cyan-200/80">⌘K</kbd>{" "}
+        in the app to jump anywhere
       </footer>
     </div>
   );

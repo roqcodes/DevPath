@@ -6,10 +6,14 @@ import {
   BookOpen,
   Code2,
   Flame,
+  GitBranch,
   LayoutDashboard,
+  Medal,
   Menu,
+  RotateCcw,
   Settings,
   Sparkles,
+  Swords,
   Trophy,
   User,
   X,
@@ -18,40 +22,24 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/shared/logo";
+import { StreakFlame } from "@/components/progression";
 import { useApp } from "@/lib/context/app-context";
 
-const NAV_ITEMS = [
-  {
-    href: "/dashboard",
-    label: "Dashboard",
-    icon: LayoutDashboard,
-    badge: null,
-  },
-  {
-    href: "/learn",
-    label: "Learn",
-    icon: BookOpen,
-    badge: "89",
-  },
-  {
-    href: "/practice",
-    label: "Practice",
-    icon: Code2,
-    badge: "Bank",
-  },
-  {
-    href: "/challenges",
-    label: "Challenges",
-    icon: Zap,
-    badge: "Beta",
-  },
-  {
-    href: "/rankings",
-    label: "Rankings",
-    icon: Trophy,
-    badge: null,
-  },
-];
+const PRIMARY_NAV = [
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/path", label: "Path", icon: GitBranch, badge: "Map" },
+  { href: "/learn", label: "Learn", icon: BookOpen },
+  { href: "/practice", label: "Practice", icon: Code2, badge: "Bank" },
+  { href: "/review", label: "Review", icon: RotateCcw },
+] as const;
+
+const NEXT_LEVEL_NAV = [
+  { href: "/arena", label: "Arena", icon: Swords, badge: "Beta" },
+  { href: "/achievements", label: "Achievements", icon: Medal },
+  { href: "/wrapped", label: "Wrapped", icon: Sparkles },
+  { href: "/rankings", label: "Rankings", icon: Trophy },
+  { href: "/challenges", label: "Challenges", icon: Zap, badge: "Beta" },
+] as const;
 
 const BOTTOM_ITEMS = [
   { href: "/profile", label: "Profile", icon: User },
@@ -79,9 +67,9 @@ export function AppSidebar() {
     href: string;
     label: string;
     icon: typeof LayoutDashboard;
-    badge?: string | null;
+    badge?: string;
   }) => {
-    const active = pathname === href || pathname.startsWith(href + "/");
+    const active = pathname === href || pathname.startsWith(`${href}/`);
     return (
       <Link
         href={href}
@@ -124,48 +112,55 @@ export function AppSidebar() {
 
   const sidebar = (
     <aside className="flex h-full w-64 flex-col border-r border-slate-200/80 bg-white">
-      {/* Brand header */}
       <div className="flex h-16 items-center border-b border-slate-100 px-5">
         <Logo href="/dashboard" size="sm" />
       </div>
 
-      {/* Main navigation */}
       <div className="flex-1 overflow-y-auto px-3.5 py-4 space-y-6">
         <div>
           <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-            Platform Menu
+            Study
           </p>
-          <nav className="space-y-1" aria-label="Main">
-            {NAV_ITEMS.map((item) => (
+          <nav className="space-y-1" aria-label="Study">
+            {PRIMARY_NAV.map((item) => (
               <NavLink key={item.href} {...item} />
             ))}
           </nav>
         </div>
 
-        {/* Motivational Card: Daily Streak & Focus */}
+        <div>
+          <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+            Progress
+          </p>
+          <nav className="space-y-1" aria-label="Progress">
+            {NEXT_LEVEL_NAV.map((item) => (
+              <NavLink key={item.href} {...item} />
+            ))}
+          </nav>
+        </div>
+
         <div className="rounded-2xl border border-amber-200/60 bg-gradient-to-br from-amber-50/60 via-orange-50/40 to-amber-100/30 p-3.5 shadow-[0_2px_8px_rgba(245,158,11,0.06)]">
           <div className="flex items-center justify-between mb-2">
             <span className="flex items-center gap-1.5 text-xs font-bold text-amber-900">
-              <Flame className="h-4 w-4 fill-amber-500 text-amber-500" />
-              {state.progress.streak} Day Streak
+              <Flame className="h-4 w-4 fill-amber-500 text-amber-500 m-flame" />
+              <StreakFlame size="sm" className="text-xs font-bold tabular-nums" />
             </span>
             <span className="rounded-full bg-amber-200/60 px-1.5 py-0.5 text-[10px] font-bold text-amber-800">
               Active
             </span>
           </div>
           <p className="text-[11px] leading-relaxed text-amber-900/80 mb-2.5">
-            Keep your momentum going! Solve 2 problems or complete 1 lesson today.
+            Your path unlocks one glowing node at a time — keep the chain alive today.
           </p>
           <Link
-            href="/learn"
+            href="/path"
             className="flex items-center justify-center gap-1 rounded-xl bg-amber-500 px-2.5 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-amber-600 transition-colors"
           >
             <Sparkles className="h-3 w-3" />
-            Resume Syllabus
+            Open path map
           </Link>
         </div>
 
-        {/* Account links */}
         <div>
           <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
             Account
@@ -178,7 +173,6 @@ export function AppSidebar() {
         </div>
       </div>
 
-      {/* User profile footer pill */}
       <div className="border-t border-slate-100 p-3.5">
         <Link
           href="/profile"
