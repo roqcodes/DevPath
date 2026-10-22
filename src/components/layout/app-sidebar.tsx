@@ -2,232 +2,119 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  BookOpen,
-  Code2,
-  Flame,
-  GitBranch,
-  LayoutDashboard,
-  Medal,
-  Menu,
-  RotateCcw,
-  Settings,
-  Sparkles,
-  Swords,
-  Trophy,
-  User,
-  X,
-  Zap,
-} from "lucide-react";
-import { useState } from "react";
-import { cn } from "@/lib/utils";
 import { Logo } from "@/components/shared/logo";
-import { StreakFlame } from "@/components/progression";
+import { CompanionAvatar } from "@/components/companion";
 import { useApp } from "@/lib/context/app-context";
+import { cn } from "@/lib/utils";
+import { PRIMARY_NAV, SECONDARY_NAV, isActive, type NavItem } from "./nav-items";
+import { useReviewsDue } from "./use-shell-data";
 
-const PRIMARY_NAV = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/path", label: "Path", icon: GitBranch, badge: "Map" },
-  { href: "/learn", label: "Learn", icon: BookOpen },
-  { href: "/practice", label: "Practice", icon: Code2, badge: "Bank" },
-  { href: "/review", label: "Review", icon: RotateCcw },
-] as const;
-
-const NEXT_LEVEL_NAV = [
-  { href: "/arena", label: "Arena", icon: Swords, badge: "Beta" },
-  { href: "/achievements", label: "Achievements", icon: Medal },
-  { href: "/wrapped", label: "Wrapped", icon: Sparkles },
-  { href: "/rankings", label: "Rankings", icon: Trophy },
-  { href: "/challenges", label: "Challenges", icon: Zap, badge: "Beta" },
-] as const;
-
-const BOTTOM_ITEMS = [
-  { href: "/profile", label: "Profile", icon: User },
-  { href: "/settings", label: "Settings", icon: Settings },
-];
+function SidebarLink({ item, active, badge }: { item: NavItem; active: boolean; badge?: number }) {
+  const Icon = item.icon;
+  return (
+    <Link
+      href={item.href}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors duration-200",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2",
+        active
+          ? "bg-indigo-50/90 text-indigo-700 font-semibold ring-1 ring-indigo-200/70"
+          : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+      )}
+    >
+      <span
+        className={cn(
+          "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors",
+          active ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-slate-800"
+        )}
+      >
+        <Icon className="h-4 w-4" aria-hidden />
+      </span>
+      <span className="flex-1">{item.label}</span>
+      {badge ? (
+        <span
+          className="min-w-5 rounded-full bg-amber-500 px-1.5 py-0.5 text-center text-[10px] font-bold tabular-nums text-white"
+          aria-label={`${badge} reviews due`}
+        >
+          {badge > 99 ? "99+" : badge}
+        </span>
+      ) : null}
+      {item.chord && !badge ? (
+        <span className="hidden font-mono text-[10px] text-slate-300 group-hover:text-slate-400 xl:inline" aria-hidden>
+          g {item.chord}
+        </span>
+      ) : null}
+    </Link>
+  );
+}
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const { state } = useApp();
-
-  const userInitials = (state.user.name || "Student")
+  const due = useReviewsDue();
+  const name = state.user.displayName || state.user.name || "Student";
+  const initials = name
     .split(" ")
     .map((s) => s[0])
     .slice(0, 2)
     .join("")
     .toUpperCase();
 
-  const NavLink = ({
-    href,
-    label,
-    icon: Icon,
-    badge,
-  }: {
-    href: string;
-    label: string;
-    icon: typeof LayoutDashboard;
-    badge?: string;
-  }) => {
-    const active = pathname === href || pathname.startsWith(`${href}/`);
-    return (
-      <Link
-        href={href}
-        onClick={() => setMobileOpen(false)}
-        className={cn(
-          "group relative flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-          active
-            ? "bg-indigo-50/90 text-indigo-700 font-semibold shadow-[0_1px_2px_rgba(79,70,229,0.06)] ring-1 ring-indigo-200/70"
-            : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
-        )}
-      >
-        <div className="flex items-center gap-3">
-          <div
-            className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-lg transition-colors",
-              active
-                ? "bg-indigo-600 text-white shadow-xs"
-                : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-slate-800"
-            )}
-          >
-            <Icon className="h-4 w-4 shrink-0" aria-hidden />
-          </div>
-          <span>{label}</span>
-        </div>
-        {badge && (
-          <span
-            className={cn(
-              "rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-tight transition-colors",
-              active
-                ? "bg-indigo-200/70 text-indigo-800"
-                : "bg-slate-100 text-slate-500 group-hover:bg-slate-200/80 group-hover:text-slate-700"
-            )}
-          >
-            {badge}
-          </span>
-        )}
-      </Link>
-    );
-  };
-
-  const sidebar = (
-    <aside className="flex h-full w-64 flex-col border-r border-slate-200/80 bg-white">
+  return (
+    <aside
+      className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-slate-200/80 bg-white lg:flex"
+      aria-label="Sidebar"
+    >
       <div className="flex h-16 items-center border-b border-slate-100 px-5">
         <Logo href="/dashboard" size="sm" />
       </div>
 
-      <div className="flex-1 overflow-y-auto px-3.5 py-4 space-y-6">
-        <div>
-          <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-            Study
-          </p>
-          <nav className="space-y-1" aria-label="Study">
-            {PRIMARY_NAV.map((item) => (
-              <NavLink key={item.href} {...item} />
-            ))}
-          </nav>
-        </div>
+      <div className="flex-1 space-y-6 overflow-y-auto px-3.5 py-4">
+        <nav aria-label="Main" className="space-y-1">
+          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Learn</p>
+          {PRIMARY_NAV.map((item) => (
+            <SidebarLink
+              key={item.href}
+              item={item}
+              active={isActive(pathname, item.href)}
+              badge={item.href === "/review" ? due : undefined}
+            />
+          ))}
+        </nav>
+        <nav aria-label="More" className="space-y-1">
+          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">You</p>
+          {SECONDARY_NAV.map((item) => (
+            <SidebarLink key={item.href} item={item} active={isActive(pathname, item.href)} />
+          ))}
+        </nav>
 
-        <div>
-          <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-            Progress
-          </p>
-          <nav className="space-y-1" aria-label="Progress">
-            {NEXT_LEVEL_NAV.map((item) => (
-              <NavLink key={item.href} {...item} />
-            ))}
-          </nav>
-        </div>
-
-        <div className="rounded-2xl border border-amber-200/60 bg-gradient-to-br from-amber-50/60 via-orange-50/40 to-amber-100/30 p-3.5 shadow-[0_2px_8px_rgba(245,158,11,0.06)]">
-          <div className="flex items-center justify-between mb-2">
-            <span className="flex items-center gap-1.5 text-xs font-bold text-amber-900">
-              <Flame className="h-4 w-4 fill-amber-500 text-amber-500 m-flame" />
-              <StreakFlame size="sm" className="text-xs font-bold tabular-nums" />
-            </span>
-            <span className="rounded-full bg-amber-200/60 px-1.5 py-0.5 text-[10px] font-bold text-amber-800">
-              Active
-            </span>
+        <div className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/80 to-white p-3.5">
+          <div className="flex items-center gap-2.5">
+            <CompanionAvatar mood="idle" size={28} />
+            <p className="text-[11px] leading-snug text-slate-600">
+              Stuck? Press{" "}
+              <kbd className="rounded border border-slate-200 bg-white px-1 font-mono text-[10px] text-slate-500">Ctrl K</kbd>{" "}
+              and ask Kip.
+            </p>
           </div>
-          <p className="text-[11px] leading-relaxed text-amber-900/80 mb-2.5">
-            Your path unlocks one glowing node at a time — keep the chain alive today.
-          </p>
-          <Link
-            href="/path"
-            className="flex items-center justify-center gap-1 rounded-xl bg-amber-500 px-2.5 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-amber-600 transition-colors"
-          >
-            <Sparkles className="h-3 w-3" />
-            Open path map
-          </Link>
-        </div>
-
-        <div>
-          <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-            Account
-          </p>
-          <nav className="space-y-1" aria-label="Account">
-            {BOTTOM_ITEMS.map((item) => (
-              <NavLink key={item.href} {...item} />
-            ))}
-          </nav>
         </div>
       </div>
 
       <div className="border-t border-slate-100 p-3.5">
         <Link
           href="/profile"
-          className="flex items-center gap-3 rounded-xl p-2 hover:bg-slate-50 transition-colors group"
+          className="group flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
         >
-          <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-600 to-indigo-400 font-semibold text-white shadow-xs ring-2 ring-indigo-100">
-            {userInitials}
-            <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
-          </div>
-          <div className="flex flex-col min-w-0 flex-1 leading-tight">
-            <span className="truncate text-xs font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
-              {state.user.name || "Student"}
-            </span>
-            <span className="truncate text-[11px] text-slate-500">
-              {state.user.department || "IT"} · Batch {state.user.batch || "A"}
-            </span>
-          </div>
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-600 to-indigo-400 text-xs font-semibold text-white ring-2 ring-indigo-100">
+            {initials}
+          </span>
+          <span className="flex min-w-0 flex-1 flex-col leading-tight">
+            <span className="truncate text-xs font-bold text-slate-900 group-hover:text-indigo-600">{name}</span>
+            <span className="truncate text-[11px] text-slate-500">View profile</span>
+          </span>
         </Link>
       </div>
     </aside>
-  );
-
-  return (
-    <>
-      <button
-        type="button"
-        className="fixed left-4 top-3.5 z-50 flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white/90 backdrop-blur-md shadow-sm lg:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        onClick={() => setMobileOpen(true)}
-        aria-label="Open navigation"
-      >
-        <Menu className="h-5 w-5 text-slate-700" />
-      </button>
-
-      <div className="hidden lg:block shrink-0">{sidebar}</div>
-
-      {mobileOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div
-            className="absolute inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
-            onClick={() => setMobileOpen(false)}
-            aria-hidden
-          />
-          <div className="absolute left-0 top-0 h-full w-64 animate-fade-in shadow-2xl">
-            <button
-              type="button"
-              className="absolute right-3 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              onClick={() => setMobileOpen(false)}
-              aria-label="Close navigation"
-            >
-              <X className="h-4 w-4" />
-            </button>
-            {sidebar}
-          </div>
-        </div>
-      )}
-    </>
   );
 }
