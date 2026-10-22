@@ -1,11 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import {
-  ArrowRight,
   CheckCircle2,
-  Clock,
   Code2,
   Filter,
   Search,
@@ -13,18 +10,16 @@ import {
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/app-layout";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ProblemListRow } from "@/components/practice/problem-list-row";
 import { useApp } from "@/lib/context/app-context";
 import type { PublicProblemView } from "@/lib/questions/types";
 import { DIFFICULTY_LABELS } from "@/lib/questions/difficulty-config";
-import { cn } from "@/lib/utils";
-
 type StatusFilter = "all" | "solved" | "attempted" | "unsolved" | "bookmarked";
 
 export default function PracticePage() {
-  const { state } = useApp();
+  const { state, toggleBookmark } = useApp();
   const [search, setSearch] = useState("");
   const [difficulty, setDifficulty] = useState<string>("all");
   const [topic, setTopic] = useState<string>("all");
@@ -84,29 +79,6 @@ export default function PracticePage() {
 
   const pages = Math.max(1, Math.ceil(total / 20));
   const totalSolvedCount = state.progress.solvedProblems.length;
-
-  const getDifficultyBadge = (label: string) => {
-    const lower = label.toLowerCase();
-    if (lower.includes("easy") || lower.includes("foundation")) {
-      return (
-        <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
-          {label}
-        </span>
-      );
-    }
-    if (lower.includes("med") || lower.includes("intermediate")) {
-      return (
-        <span className="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-600/20">
-          {label}
-        </span>
-      );
-    }
-    return (
-      <span className="inline-flex items-center rounded-md bg-rose-50 px-2 py-0.5 text-xs font-semibold text-rose-700 ring-1 ring-inset ring-rose-600/20">
-        {label}
-      </span>
-    );
-  };
 
   return (
     <AppLayout>
@@ -266,74 +238,17 @@ export default function PracticePage() {
 
         {/* Problem list */}
         {!loading && !error && filtered.length > 0 && (
-          <div className="space-y-2.5">
-            {filtered.map((p) => {
-              const solved = state.progress.solvedProblems.includes(p.id);
-              const attempted = state.progress.attemptedProblems.includes(p.id);
-
-              return (
-                <Card
-                  key={p.id}
-                  className="hover-lift border-slate-200/80 bg-white transition-all hover:border-indigo-300"
-                >
-                  <CardContent className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="space-y-1.5 flex-1 min-w-0">
-                      <div className="flex items-center gap-2.5 flex-wrap">
-                        <Link
-                          href={`/practice/${p.id}`}
-                          className="font-bold text-slate-900 hover:text-indigo-600 transition-colors text-base"
-                        >
-                          {p.title}
-                        </Link>
-                        {getDifficultyBadge(p.difficulty.label)}
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                        {p.topics.map((t) => (
-                          <span
-                            key={t}
-                            className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600"
-                          >
-                            {t}
-                          </span>
-                        ))}
-                        <span className="inline-flex items-center gap-1 text-slate-400">
-                          <Clock className="h-3 w-3" />
-                          ~{p.estimated_minutes} min
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Status & Solve CTA */}
-                    <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                      {solved ? (
-                        <Badge variant="success" dot className="text-xs">
-                          Solved
-                        </Badge>
-                      ) : attempted ? (
-                        <Badge variant="warning" dot className="text-xs">
-                          Attempted
-                        </Badge>
-                      ) : (
-                        <span className="text-xs font-medium text-slate-400">Unsolved</span>
-                      )}
-
-                      <Button
-                        size="sm"
-                        variant={solved ? "outline" : "default"}
-                        className="h-8 text-xs font-semibold group"
-                        asChild
-                      >
-                        <Link href={`/practice/${p.id}`}>
-                          {solved ? "Review Code" : "Solve Challenge"}
-                          <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+          <div className="space-y-1.5">
+            {filtered.map((p) => (
+              <ProblemListRow
+                key={p.id}
+                problem={p}
+                solved={state.progress.solvedProblems.includes(p.id)}
+                attempted={state.progress.attemptedProblems.includes(p.id)}
+                bookmarked={state.progress.bookmarks.includes(p.id)}
+                onToggleBookmark={() => toggleBookmark(p.id)}
+              />
+            ))}
           </div>
         )}
 
