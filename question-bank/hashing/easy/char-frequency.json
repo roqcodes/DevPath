@@ -1,0 +1,36 @@
+{
+  "schema_version": "2.0.0",
+  "id": "char-frequency",
+  "slug": "char-frequency",
+  "title": "Character Frequency",
+  "difficulty": { "label": "easy", "score": 280 },
+  "topics": ["hashing", "strings"],
+  "status": "published",
+  "revision": 1,
+  "estimated_minutes": 15,
+  "provenance": { "author": "SAIT DSA", "license": "CC-BY-4.0", "source": "original" },
+  "statement": "Given a lowercase string s and a character c, print how many times c appears in s.",
+  "io_format": {
+    "mode": "stdin_stdout",
+    "input_description": "Line 1: string s. Line 2: character c.",
+    "output_description": "Single integer count."
+  },
+  "constraints": ["1 <= |s| <= 10^5", "c is lowercase a-z"],
+  "examples": [{ "input": "abracadabra\na", "output": "5" }],
+  "execution": {
+    "time_limit_ms": 1000,
+    "memory_limit_kb": 131072,
+    "comparison": "trimmed",
+    "languages": ["python"]
+  },
+  "test_cases": [
+    { "id": "pub-1", "is_public": true, "input": "abracadabra\na", "expected_output": "5" },
+    { "id": "hid-1", "is_public": false, "input": "zzz\nz", "expected_output": "3" }
+  ],
+  "hints": [{ "order": 1, "text": "Use a frequency map or simple scan." }],
+  "editorial": "Linear scan counting matches.",
+  "complexity": { "time": "O(n)", "space": "O(1)" },
+  "reference_solutions": {
+    "python": "import sys\nlines = sys.stdin.read().splitlines()\ns = lines[0]\nc = lines[1]\nprint(s.count(c))\n"
+  }
+}

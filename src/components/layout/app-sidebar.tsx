@@ -2,104 +2,119 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Award,
-  FolderKanban,
-  LayoutDashboard,
-  Map,
-  Menu,
-  Settings,
-  User,
-  X,
-  GitBranch,
-} from "lucide-react";
-import { useState } from "react";
-import { cn } from "@/lib/utils";
 import { Logo } from "@/components/shared/logo";
+import { CompanionAvatar } from "@/components/companion";
+import { useApp } from "@/lib/context/app-context";
+import { cn } from "@/lib/utils";
+import { PRIMARY_NAV, SECONDARY_NAV, isActive, type NavItem } from "./nav-items";
+import { useReviewsDue } from "./use-shell-data";
 
-const NAV_ITEMS = [
-  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { href: "/journey", label: "Journey", icon: Map },
-  { href: "/skills", label: "Skills", icon: GitBranch },
-  { href: "/project", label: "Project", icon: FolderKanban },
-  { href: "/certificate", label: "Certificate", icon: Award },
-];
-
-const BOTTOM_ITEMS = [
-  { href: "/profile", label: "Profile", icon: User },
-  { href: "/settings", label: "Settings", icon: Settings },
-];
+function SidebarLink({ item, active, badge }: { item: NavItem; active: boolean; badge?: number }) {
+  const Icon = item.icon;
+  return (
+    <Link
+      href={item.href}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors duration-200",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2",
+        active
+          ? "bg-indigo-50/90 text-indigo-700 font-semibold ring-1 ring-indigo-200/70"
+          : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+      )}
+    >
+      <span
+        className={cn(
+          "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors",
+          active ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-slate-800"
+        )}
+      >
+        <Icon className="h-4 w-4" aria-hidden />
+      </span>
+      <span className="flex-1">{item.label}</span>
+      {badge ? (
+        <span
+          className="min-w-5 rounded-full bg-amber-500 px-1.5 py-0.5 text-center text-[10px] font-bold tabular-nums text-white"
+          aria-label={`${badge} reviews due`}
+        >
+          {badge > 99 ? "99+" : badge}
+        </span>
+      ) : null}
+      {item.chord && !badge ? (
+        <span className="hidden font-mono text-[10px] text-slate-300 group-hover:text-slate-400 xl:inline" aria-hidden>
+          g {item.chord}
+        </span>
+      ) : null}
+    </Link>
+  );
+}
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  const NavLink = ({ href, label, icon: Icon }: { href: string; label: string; icon: typeof LayoutDashboard }) => {
-    const active = pathname === href || pathname.startsWith(href + "/");
-    return (
-      <Link
-        href={href}
-        onClick={() => setMobileOpen(false)}
-        className={cn(
-          "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-          active
-            ? "bg-accent/10 text-accent font-medium"
-            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-        )}
-      >
-        <Icon className="h-4 w-4 shrink-0" />
-        {label}
-      </Link>
-    );
-  };
-
-  const sidebar = (
-    <aside className="flex h-full w-60 flex-col border-r border-sidebar-border bg-sidebar">
-      <div className="flex h-14 items-center border-b border-sidebar-border px-4">
-        <Logo href="/dashboard" size="sm" />
-      </div>
-      <nav className="flex-1 space-y-1 p-3">
-        {NAV_ITEMS.map((item) => (
-          <NavLink key={item.href} {...item} />
-        ))}
-      </nav>
-      <div className="space-y-1 border-t border-sidebar-border p-3">
-        {BOTTOM_ITEMS.map((item) => (
-          <NavLink key={item.href} {...item} />
-        ))}
-      </div>
-    </aside>
-  );
+  const { state } = useApp();
+  const due = useReviewsDue();
+  const name = state.user.displayName || state.user.name || "Student";
+  const initials = name
+    .split(" ")
+    .map((s) => s[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   return (
-    <>
-      <button
-        type="button"
-        className="fixed left-4 top-4 z-50 flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card lg:hidden"
-        onClick={() => setMobileOpen(true)}
-        aria-label="Open navigation"
-      >
-        <Menu className="h-4 w-4" />
-      </button>
+    <aside
+      className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-slate-200/80 bg-white lg:flex"
+      aria-label="Sidebar"
+    >
+      <div className="flex h-16 items-center border-b border-slate-100 px-5">
+        <Logo href="/dashboard" size="sm" />
+      </div>
 
-      <div className="hidden lg:block">{sidebar}</div>
+      <div className="flex-1 space-y-6 overflow-y-auto px-3.5 py-4">
+        <nav aria-label="Main" className="space-y-1">
+          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Learn</p>
+          {PRIMARY_NAV.map((item) => (
+            <SidebarLink
+              key={item.href}
+              item={item}
+              active={isActive(pathname, item.href)}
+              badge={item.href === "/review" ? due : undefined}
+            />
+          ))}
+        </nav>
+        <nav aria-label="More" className="space-y-1">
+          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">You</p>
+          {SECONDARY_NAV.map((item) => (
+            <SidebarLink key={item.href} item={item} active={isActive(pathname, item.href)} />
+          ))}
+        </nav>
 
-      {mobileOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setMobileOpen(false)} />
-          <div className="absolute left-0 top-0 h-full w-60 animate-fade-in">
-            <button
-              type="button"
-              className="absolute right-2 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-md hover:bg-muted"
-              onClick={() => setMobileOpen(false)}
-              aria-label="Close navigation"
-            >
-              <X className="h-4 w-4" />
-            </button>
-            {sidebar}
+        <div className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/80 to-white p-3.5">
+          <div className="flex items-center gap-2.5">
+            <CompanionAvatar mood="idle" size={28} />
+            <p className="text-[11px] leading-snug text-slate-600">
+              Stuck? Press{" "}
+              <kbd className="rounded border border-slate-200 bg-white px-1 font-mono text-[10px] text-slate-500">Ctrl K</kbd>{" "}
+              and ask Kip.
+            </p>
           </div>
         </div>
-      )}
-    </>
+      </div>
+
+      <div className="border-t border-slate-100 p-3.5">
+        <Link
+          href="/profile"
+          className="group flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-600 to-indigo-400 text-xs font-semibold text-white ring-2 ring-indigo-100">
+            {initials}
+          </span>
+          <span className="flex min-w-0 flex-1 flex-col leading-tight">
+            <span className="truncate text-xs font-bold text-slate-900 group-hover:text-indigo-600">{name}</span>
+            <span className="truncate text-[11px] text-slate-500">View profile</span>
+          </span>
+        </Link>
+      </div>
+    </aside>
   );
 }

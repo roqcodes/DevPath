@@ -5,16 +5,21 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "tsx --test src/lib/questions/validate.test.ts src/lib/questions/compare-output.test.ts src/lib/services/import-pipeline.test.ts src/lib/activity/streak-service.test.ts src/lib/scoring/scoring-policy.test.ts src/lib/curriculum/curriculum.test.ts src/lib/judge/public-result.test.ts src/lib/services/submission-run-submit.test.ts src/lib/curriculum/executable-examples.test.ts src/lib/onboarding/validate-payload.test.ts src/lib/services/ranking-scope.test.ts src/lib/learning/lesson-progress-semantics.test.ts src/lib/services/feedback-validation.test.ts src/lib/curriculum/module-lock.test.ts src/lib/auth/protected-routes.test.ts src/lib/security/rls-policy-snapshot.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.109.0",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "clsx": "^2.1.1",
+    "jszip": "^3.10.2",
     "lucide-react": "^1.43.0",
     "next": "16.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "server-only": "^0.0.1",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
@@ -23,6 +28,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }

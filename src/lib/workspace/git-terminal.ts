@@ -1,4 +1,5 @@
 import type { WorkspaceGitState } from "@/lib/types/app";
+import { formatTerminalOk } from "@/lib/ui/terminal-lines";
 
 export interface GitCommandResult {
   lines: string[];
@@ -75,7 +76,7 @@ export function runGitCommand(
     return {
       lines: [
         `Switched to a new branch '${branchName}'`,
-        "✓ Branch created successfully",
+        formatTerminalOk("Branch created successfully"),
       ],
       gitState: next,
       challengePassed: true,

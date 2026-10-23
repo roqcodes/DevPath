@@ -1,0 +1,36 @@
+{
+  "schema_version": "2.0.0",
+  "id": "reverse-string",
+  "slug": "reverse-string",
+  "title": "Reverse a String",
+  "difficulty": { "label": "beginner", "score": 120 },
+  "topics": ["strings"],
+  "status": "published",
+  "revision": 1,
+  "estimated_minutes": 10,
+  "provenance": { "author": "SAIT DSA", "license": "CC-BY-4.0", "source": "original" },
+  "statement": "Read a single line string s and print its reverse.",
+  "io_format": {
+    "mode": "stdin_stdout",
+    "input_description": "One line: string s (no spaces required).",
+    "output_description": "Reversed string."
+  },
+  "constraints": ["1 <= |s| <= 10^5"],
+  "examples": [{ "input": "hello", "output": "olleh" }],
+  "execution": {
+    "time_limit_ms": 1000,
+    "memory_limit_kb": 131072,
+    "comparison": "trimmed_lines",
+    "languages": ["python"]
+  },
+  "test_cases": [
+    { "id": "pub-1", "is_public": true, "input": "hello", "expected_output": "olleh" },
+    { "id": "hid-1", "is_public": false, "input": "a", "expected_output": "a" }
+  ],
+  "hints": [{ "order": 1, "text": "Slicing s[::-1] in Python or two-pointer swap." }],
+  "editorial": "Reverse by slicing or in-place pointers.",
+  "complexity": { "time": "O(n)", "space": "O(n)" },
+  "reference_solutions": {
+    "python": "import sys\ns = sys.stdin.readline().rstrip('\\n')\nprint(s[::-1])\n"
+  }
+}

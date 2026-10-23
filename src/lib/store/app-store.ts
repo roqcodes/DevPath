@@ -1,36 +1,61 @@
-import type { AppState, AppProgress, AssessmentResult, JourneyData, UserData } from "@/lib/types/app";
-import { DEFAULT_USER } from "@/lib/mock/user";
-import { getMockJourney } from "@/lib/mock/journey";
-import { getMockAssessmentResult } from "@/lib/mock/assessment";
+import type { AppProgress, AppState, UserData } from "@/lib/types/app";
+import { todayIsoDate } from "@/lib/utils";
 
-const STORAGE_KEY = "devpath_app_state";
+const DEFAULT_USER: UserData = {
+  name: "",
+  displayName: "",
+  email: "",
+  phone: "",
+  department: "",
+  admissionCohort: "",
+  academicYear: "",
+  batch: "",
+  studentId: "",
+  profilePublic: true,
+  weeklyGoalProblems: 5,
+  preferredLanguage: "python",
+  dsaExperience: "",
+};
 
-export const DEMO_PROGRESS: AppProgress = {
-  onboardingComplete: true,
-  assessmentComplete: true,
-  preferencesComplete: true,
-  journeyGenerated: true,
-  completedCheckpoints: ["cp-git-foundations"],
-  currentCheckpointId: "cp-branches-merging",
-  hintsUsed: {},
-  quizScores: {},
-  projectStagesCompleted: ["stage-git", "stage-testing", "stage-docker"],
-  projectComplete: false,
-  certificateEarned: false,
-  xp: 420,
-  readinessScore: 72,
-  streak: 7,
-  daysRemaining: 12,
+const STORAGE_KEY = "sait_dsa_app_state";
+
+function defaultDailyGoal() {
+  const date = todayIsoDate();
+  return {
+    date,
+    targetLessons: 1,
+    targetProblems: 2,
+    completedLessons: 0,
+    completedProblems: 0,
+    reviewDone: false,
+  };
+}
+
+export const DEFAULT_PROGRESS: AppProgress = {
+  onboardingComplete: false,
+  completedLessons: [],
+  viewedLessons: [],
+  lessonQuizPassed: {},
+  lessonCheckpointDone: {},
+  lessonMastery: {},
+  solvedProblems: [],
+  attemptedProblems: [],
+  bookmarks: [],
+  hintsRevealed: {},
+  submissions: [],
+  streak: 0,
+  lastPracticeDate: "",
+  activeMinutesThisWeek: 0,
+  activeMinutesLast30Days: 0,
+  dailyGoal: defaultDailyGoal(),
+  achievements: [],
+  rankingScore: 0,
 };
 
 export function getDefaultState(): AppState {
-  const progress = { ...DEMO_PROGRESS };
   return {
-    user: { ...DEFAULT_USER, role: "Software Developer" },
-    assessmentAnswers: {},
-    assessmentResult: getMockAssessmentResult(),
-    journey: getMockJourney(progress.completedCheckpoints, progress.currentCheckpointId),
-    progress,
+    user: { ...DEFAULT_USER },
+    progress: { ...DEFAULT_PROGRESS, dailyGoal: defaultDailyGoal() },
   };
 }
 
@@ -40,14 +65,13 @@ export function loadAppState(): AppState {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return getDefaultState();
     const parsed = JSON.parse(raw) as AppState;
-    const progress = { ...DEMO_PROGRESS, ...parsed.progress };
     return {
-      ...getDefaultState(),
-      ...parsed,
       user: { ...DEFAULT_USER, ...parsed.user },
-      progress,
-      assessmentResult: parsed.assessmentResult ?? getMockAssessmentResult(),
-      journey: parsed.journey ?? getMockJourney(progress.completedCheckpoints, progress.currentCheckpointId),
+      progress: {
+        ...DEFAULT_PROGRESS,
+        ...parsed.progress,
+        dailyGoal: { ...defaultDailyGoal(), ...parsed.progress?.dailyGoal },
+      },
     };
   } catch {
     return getDefaultState();
@@ -59,16 +83,4 @@ export function saveAppState(state: AppState): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
-export function buildJourneyFromProgress(progress: AppProgress): JourneyData {
-  return getMockJourney(progress.completedCheckpoints, progress.currentCheckpointId);
-}
-
-export function hydrateJourney(state: AppState): AppState {
-  if (!state.progress.journeyGenerated) return state;
-  return {
-    ...state,
-    journey: buildJourneyFromProgress(state.progress),
-  };
-}
-
-export type { AppState, AppProgress, AssessmentResult, JourneyData, UserData };
+export type { AppState, AppProgress, UserData };

@@ -1,0 +1,61 @@
+{
+  "schema_version": "2.0.0",
+  "id": "your-problem-id",
+  "slug": "your-problem-id",
+  "title": "Problem Title",
+  "difficulty": { "label": "beginner", "score": 200 },
+  "topics": ["arrays"],
+  "prerequisites": [],
+  "status": "draft",
+  "revision": 1,
+  "estimated_minutes": 20,
+  "provenance": {
+    "author": "SAIT DSA Content Team",
+    "license": "CC-BY-4.0",
+    "source": "original"
+  },
+  "statement": "Describe the problem in plain text or light Markdown. Do not embed HTML or scripts.",
+  "io_format": {
+    "mode": "stdin_stdout",
+    "input_description": "Describe stdin format line by line.",
+    "output_description": "Describe the exact stdout format."
+  },
+  "constraints": ["1 <= n <= 10^5"],
+  "examples": [
+    {
+      "input": "3\n1 2 3",
+      "output": "6",
+      "explanation": "Optional explanation for learners."
+    }
+  ],
+  "execution": {
+    "time_limit_ms": 2000,
+    "memory_limit_kb": 262144,
+    "comparison": "trimmed_lines",
+    "languages": ["python", "cpp", "java"]
+  },
+  "test_cases": [
+    {
+      "id": "pub-1",
+      "is_public": true,
+      "input": "3\n1 2 3",
+      "expected_output": "6"
+    },
+    {
+      "id": "hid-1",
+      "is_public": false,
+      "input": "1\n5",
+      "expected_output": "5"
+    }
+  ],
+  "hints": [{ "order": 1, "text": "First hint." }],
+  "editorial": "Full solution explanation after the student solves the problem.",
+  "complexity": {
+    "time": "O(n)",
+    "space": "O(1)",
+    "analysis": "Single pass over the input."
+  },
+  "reference_solutions": {
+    "python": "import sys\ndata = sys.stdin.read().strip().split()\n# ...\nprint(result)\n"
+  }
+}

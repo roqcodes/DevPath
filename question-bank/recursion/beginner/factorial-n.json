@@ -1,0 +1,36 @@
+{
+  "schema_version": "2.0.0",
+  "id": "factorial-n",
+  "slug": "factorial-n",
+  "title": "Factorial",
+  "difficulty": { "label": "beginner", "score": 180 },
+  "topics": ["recursion", "math"],
+  "status": "published",
+  "revision": 1,
+  "estimated_minutes": 15,
+  "provenance": { "author": "SAIT DSA", "license": "CC-BY-4.0", "source": "original" },
+  "statement": "Given n (0 <= n <= 12), print n!.",
+  "io_format": {
+    "mode": "stdin_stdout",
+    "input_description": "Single integer n.",
+    "output_description": "n factorial."
+  },
+  "constraints": ["0 <= n <= 12"],
+  "examples": [{ "input": "5", "output": "120" }],
+  "execution": {
+    "time_limit_ms": 1000,
+    "memory_limit_kb": 65536,
+    "comparison": "trimmed",
+    "languages": ["python"]
+  },
+  "test_cases": [
+    { "id": "pub-1", "is_public": true, "input": "5", "expected_output": "120" },
+    { "id": "hid-1", "is_public": false, "input": "0", "expected_output": "1" }
+  ],
+  "hints": [{ "order": 1, "text": "Use iterative multiplication or recursion with base case n=0." }],
+  "editorial": "Iterative factorial avoids recursion depth issues.",
+  "complexity": { "time": "O(n)", "space": "O(1)" },
+  "reference_solutions": {
+    "python": "import math\nn = int(input())\nprint(math.factorial(n))\n"
+  }
+}

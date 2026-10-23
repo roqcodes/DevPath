@@ -1,10 +1,5 @@
-import { AppLayout } from "@/components/layout/app-layout";
-import { ProjectView } from "@/components/project/project-view";
+import { redirect } from "next/navigation";
 
-export default function ProjectPage() {
-  return (
-    <AppLayout>
-      <ProjectView />
-    </AppLayout>
-  );
+export default function ProjectRedirect() {
+  redirect("/practice");
 }

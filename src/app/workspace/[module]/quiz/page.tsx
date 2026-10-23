@@ -1,10 +1,10 @@
-import { QuizView } from "@/components/workspace/quiz-view";
+import { redirect } from "next/navigation";
 
-export default async function QuizPage({
+export default async function WorkspaceQuizRedirect({
   params,
 }: {
   params: Promise<{ module: string }>;
 }) {
   const { module: moduleSlug } = await params;
-  return <QuizView moduleSlug={moduleSlug} />;
+  redirect(`/learn/${moduleSlug}`);
 }

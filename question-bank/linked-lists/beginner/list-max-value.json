@@ -1,0 +1,38 @@
+{
+  "schema_version": "2.0.0",
+  "id": "list-max-value",
+  "slug": "list-max-value",
+  "title": "Maximum in a Sequence (list walk)",
+  "difficulty": { "label": "beginner", "score": 160 },
+  "topics": ["linked-lists", "arrays"],
+  "prerequisites": [],
+  "status": "published",
+  "revision": 1,
+  "estimated_minutes": 15,
+  "provenance": { "author": "SAIT DSA", "license": "CC-BY-4.0", "source": "original" },
+  "statement": "You are given n integers in order (like values stored in consecutive nodes of a singly linked list). Print the maximum value.",
+  "io_format": {
+    "mode": "stdin_stdout",
+    "input_description": "Line 1: n. Line 2: n space-separated integers.",
+    "output_description": "Single integer: the maximum value."
+  },
+  "constraints": ["1 <= n <= 10^5", "|values| <= 10^9"],
+  "examples": [{ "input": "5\n3 1 9 2 7", "output": "9" }],
+  "execution": {
+    "time_limit_ms": 2000,
+    "memory_limit_kb": 262144,
+    "comparison": "trimmed_lines",
+    "languages": ["python", "cpp", "java"]
+  },
+  "test_cases": [
+    { "id": "pub-1", "is_public": true, "input": "5\n3 1 9 2 7", "expected_output": "9" },
+    { "id": "pub-2", "is_public": true, "input": "1\n-100", "expected_output": "-100" },
+    { "id": "hid-1", "is_public": false, "input": "4\n0 0 0 5", "expected_output": "5" }
+  ],
+  "hints": [{ "order": 1, "text": "Track the best value seen while scanning left to right — same as traversing a linked list." }],
+  "editorial": "One pass O(n) time, O(1) extra space.",
+  "complexity": { "time": "O(n)", "space": "O(1)" },
+  "reference_solutions": {
+    "python": "import sys\nlines = sys.stdin.read().strip().split()\nn = int(lines[0])\nnums = list(map(int, lines[1:1+n]))\nprint(max(nums))\n"
+  }
+}

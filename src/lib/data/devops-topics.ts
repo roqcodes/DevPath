@@ -28,6 +28,6 @@ export const TOPIC_ICONS: Record<DevOpsTopic, string> = {
   git: "⎇",
   docker: "◫",
   ci_cd: "⟳",
-  testing: "✓",
+  testing: "T",
   deployment: "▲",
 };

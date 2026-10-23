@@ -1,11 +1,20 @@
 import { cn } from "@/lib/utils";
 import type { HTMLAttributes } from "react";
 
-export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+export interface CardProps extends HTMLAttributes<HTMLDivElement> {
+  variant?: "default" | "interactive" | "flat";
+  padding?: "default" | "dense";
+}
+
+export function Card({ className, variant = "default", padding, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "rounded-lg border border-border bg-card text-card-foreground transition-shadow",
+        "rounded-2xl border border-slate-200/80 bg-card text-card-foreground transition-all duration-200",
+        variant === "default" && "shadow-sm",
+        variant === "interactive" && "card-interactive shadow-sm",
+        variant === "flat" && "shadow-none",
+        padding === "dense" && "[&_.card-pad]:p-5",
         className
       )}
       {...props}
@@ -14,11 +23,16 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
 }
 
 export function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("flex flex-col gap-1.5 p-5", className)} {...props} />;
+  return <div className={cn("card-pad flex flex-col gap-1.5 p-6", className)} {...props} />;
 }
 
 export function CardTitle({ className, ...props }: HTMLAttributes<HTMLHeadingElement>) {
-  return <h3 className={cn("text-base font-semibold leading-none tracking-tight", className)} {...props} />;
+  return (
+    <h3
+      className={cn("text-base font-semibold leading-tight tracking-tight text-slate-900", className)}
+      {...props}
+    />
+  );
 }
 
 export function CardDescription({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) {
@@ -26,9 +40,9 @@ export function CardDescription({ className, ...props }: HTMLAttributes<HTMLPara
 }
 
 export function CardContent({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("p-5 pt-0", className)} {...props} />;
+  return <div className={cn("card-pad p-6 pt-0", className)} {...props} />;
 }
 
 export function CardFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("flex items-center p-5 pt-0", className)} {...props} />;
+  return <div className={cn("card-pad flex items-center p-6 pt-0", className)} {...props} />;
 }

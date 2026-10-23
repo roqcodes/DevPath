@@ -1,26 +1,9 @@
+import { getOpenRouterConfig } from "./config";
 import type {
   AICompletionRequest,
   AICompletionResponse,
   AIServiceError,
 } from "./types";
-
-function getOpenRouterConfig(): { apiKey: string; model: string } | null {
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  const model = process.env.OPENROUTER_MODEL;
-  if (!apiKey || !model) return null;
-  return { apiKey, model };
-}
-
-function createMockResponse(request: AICompletionRequest, model: string): AICompletionResponse {
-  const lastUserMessage = [...request.messages].reverse().find((m) => m.role === "user");
-  const topic = lastUserMessage?.content.slice(0, 80) ?? "DevOps";
-
-  return {
-    content: `Based on your background in ${topic}, I recommend starting with Git fundamentals, then progressing through Docker and CI/CD pipelines. Focus on hands-on practice with each checkpoint before moving forward.`,
-    model: `mock/${model || "local"}`,
-    usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
-  };
-}
 
 export async function completeChat(
   request: AICompletionRequest
@@ -28,9 +11,11 @@ export async function completeChat(
   const config = getOpenRouterConfig();
 
   if (!config) {
-    console.info("[AI] OpenRouter not configured — using local mock response");
     return {
-      data: createMockResponse(request, process.env.OPENROUTER_MODEL ?? "local"),
+      error: {
+        code: "config_missing",
+        message: "AI is not configured. Set OPENROUTER_API_KEY (and optionally OPENROUTER_MODEL).",
+      },
     };
   }
 
@@ -41,7 +26,7 @@ export async function completeChat(
         Authorization: `Bearer ${config.apiKey}`,
         "Content-Type": "application/json",
         "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
-        "X-Title": "DevPath AI",
+        "X-Title": "SAIT DSA",
       },
       body: JSON.stringify({
         model: config.model,
@@ -55,12 +40,23 @@ export async function completeChat(
       const body = await response.text();
       console.error("[AI] OpenRouter error:", response.status, body);
       return {
-        data: createMockResponse(request, config.model),
+        error: {
+          code: "api_error",
+          message: "The AI service returned an error. Try again in a moment.",
+        },
       };
     }
 
     const json = await response.json();
-    const content = json.choices?.[0]?.message?.content ?? "";
+    const content = json.choices?.[0]?.message?.content?.trim() ?? "";
+    if (!content) {
+      return {
+        error: {
+          code: "api_error",
+          message: "The AI service returned an empty response.",
+        },
+      };
+    }
 
     return {
       data: {
@@ -78,8 +74,10 @@ export async function completeChat(
   } catch (err) {
     console.error("[AI] Network error:", err);
     return {
-      data: createMockResponse(request, config.model),
-      error: { code: "network_error", message: "AI service unavailable" },
+      error: {
+        code: "network_error",
+        message: "Unable to reach the AI service. Check your connection and try again.",
+      },
     };
   }
 }

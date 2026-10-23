@@ -1,0 +1,36 @@
+{
+  "schema_version": "2.0.0",
+  "id": "binary-search-index",
+  "slug": "binary-search-index",
+  "title": "Binary Search Index",
+  "difficulty": { "label": "intermediate", "score": 550 },
+  "topics": ["searching-sorting", "binary-search"],
+  "status": "published",
+  "revision": 1,
+  "estimated_minutes": 20,
+  "provenance": { "author": "SAIT DSA", "license": "CC-BY-4.0", "source": "original" },
+  "statement": "Given sorted distinct integers and a target, print the index of target or -1 if absent.",
+  "io_format": {
+    "mode": "stdin_stdout",
+    "input_description": "Line 1: n. Line 2: n sorted ints. Line 3: target.",
+    "output_description": "Index or -1."
+  },
+  "constraints": ["1 <= n <= 10^5"],
+  "examples": [{ "input": "5\n1 3 5 7 9\n5", "output": "2" }],
+  "execution": {
+    "time_limit_ms": 1000,
+    "memory_limit_kb": 131072,
+    "comparison": "trimmed",
+    "languages": ["python"]
+  },
+  "test_cases": [
+    { "id": "pub-1", "is_public": true, "input": "5\n1 3 5 7 9\n5", "expected_output": "2" },
+    { "id": "pub-2", "is_public": true, "input": "5\n1 3 5 7 9\n4", "expected_output": "-1" },
+    { "id": "hid-1", "is_public": false, "input": "1\n10\n10", "expected_output": "0" }
+  ],
+  "hints": [{ "order": 1, "text": "Maintain lo/hi pointers on index range." }],
+  "complexity": { "time": "O(log n)", "space": "O(1)" },
+  "reference_solutions": {
+    "python": "import sys\ndata = sys.stdin.read().strip().split()\nn = int(data[0])\narr = list(map(int, data[1:1+n]))\nt = int(data[1+n])\nlo, hi = 0, n-1\nans = -1\nwhile lo <= hi:\n    mid = (lo+hi)//2\n    if arr[mid] == t:\n        ans = mid\n        break\n    if arr[mid] < t:\n        lo = mid+1\n    else:\n        hi = mid-1\nprint(ans)\n"
+  }
+}

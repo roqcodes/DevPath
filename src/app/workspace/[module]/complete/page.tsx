@@ -1,10 +1,10 @@
-import { CheckpointComplete } from "@/components/workspace/checkpoint-complete";
+import { redirect } from "next/navigation";
 
-export default async function CheckpointCompletePage({
+export default async function WorkspaceCompleteRedirect({
   params,
 }: {
   params: Promise<{ module: string }>;
 }) {
   const { module: moduleSlug } = await params;
-  return <CheckpointComplete moduleSlug={moduleSlug} />;
+  redirect(`/learn/${moduleSlug}`);
 }

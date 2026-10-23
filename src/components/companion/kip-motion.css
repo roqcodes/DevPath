@@ -1,0 +1,51 @@
+@keyframes kip-idle-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+@keyframes kip-think-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-4deg); }
+  75% { transform: rotate(4deg); }
+}
+
+@keyframes kip-excited-bounce {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-3px); }
+  60% { transform: translateY(1px); }
+}
+
+.kip-avatar .kip-body {
+  transform-origin: center;
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.kip-mood-idle .kip-body {
+  animation: kip-idle-breathe 2.8s ease-in-out infinite;
+}
+
+.kip-mood-thinking .kip-antennae {
+  animation: kip-think-wiggle 0.6s ease-in-out infinite;
+}
+
+.kip-mood-excited .kip-body,
+.kip-mood-proud .kip-body {
+  animation: kip-excited-bounce 0.9s ease-in-out infinite;
+}
+
+.kip-mood-concerned .kip-body {
+  transform: rotate(-6deg);
+}
+
+.kip-mood-focused .kip-body {
+  transform: scale(1.02);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kip-mood-idle .kip-body,
+  .kip-mood-thinking .kip-antennae,
+  .kip-mood-excited .kip-body,
+  .kip-mood-proud .kip-body {
+    animation: none;
+  }
+}

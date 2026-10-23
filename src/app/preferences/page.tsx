@@ -1,5 +1,5 @@
-import { PreferencesFlow } from "@/components/preferences/preferences-flow";
+import { redirect } from "next/navigation";
 
-export default function PreferencesPage() {
-  return <PreferencesFlow />;
+export default function PreferencesRedirect() {
+  redirect("/onboarding");
 }

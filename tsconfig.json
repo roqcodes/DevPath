@@ -30,5 +30,21 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "src/components/assessment",
+    "src/components/certificate",
+    "src/components/dashboard/ai-learning-plan.tsx",
+    "src/components/dashboard/learning-intelligence.tsx",
+    "src/components/journey",
+    "src/components/mentor",
+    "src/components/preferences",
+    "src/components/project",
+    "src/components/skills",
+    "src/components/workspace",
+    "src/components/shared/journey-progress-header.tsx",
+    "src/components/shared/skill-bars.tsx",
+    "src/lib/mock",
+    "src/lib/workspace"
+  ]
 }

@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { getMockProject, PROJECT_COMPETENCY } from "@/lib/mock/project";
 import { useApp } from "@/lib/context/app-context";
 import { cn } from "@/lib/utils";
+import { TerminalOutputLine } from "@/components/shared/terminal-output-line";
+import { formatTerminalOk } from "@/lib/ui/terminal-lines";
 
 export function ProjectView() {
   const router = useRouter();
@@ -32,7 +34,7 @@ export function ProjectView() {
       setTerminalOutput((prev) => [
         ...prev,
         `$ # Completed: ${nextStage.title}`,
-        `✓ ${nextStage.title} stage complete`,
+        formatTerminalOk(`${nextStage.title} stage complete`),
       ]);
       const updated = getMockProject([...state.progress.projectStagesCompleted, nextStage.id]);
       if (updated.completedStages === updated.totalStages) {
@@ -147,13 +149,14 @@ export function ProjectView() {
             <CardContent>
               <div className="terminal-panel rounded-lg border border-border p-4 font-mono text-sm space-y-1 min-h-[200px]">
                 {terminalOutput.map((line, i) => (
-                  <div key={i} className={cn(
-                    "text-zinc-300",
-                    line.startsWith("✓") && "text-success",
-                    line.startsWith("$ #") && "text-accent"
-                  )}>
-                    {line}
-                  </div>
+                  <TerminalOutputLine
+                    key={i}
+                    line={line}
+                    className={cn(
+                      "text-zinc-300",
+                      line.startsWith("$ #") && "text-accent"
+                    )}
+                  />
                 ))}
               </div>
             </CardContent>
